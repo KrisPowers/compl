@@ -48,4 +48,4 @@ CI runs the same checks on Linux, macOS and Windows, plus syntax checks for the 
 
 ## Releasing
 
-Maintainers publish a GitHub release with a `vX.Y.Z` tag after bumping the version in `Cargo.toml` and adding a `CHANGELOG.md` entry. The release workflow builds and attaches the archives and opens a pull request updating the Homebrew formula.
+Maintainers publish a GitHub release with a `vX.Y.Z` tag after bumping the version in `Cargo.toml`, and describe the changes in the release notes. The release workflow builds and attaches the archives and opens a pull request updating the Homebrew formula.
