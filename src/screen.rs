@@ -94,7 +94,7 @@ fn text(screen: &Screen, start: u16, from: usize, to: usize) -> String {
         let col = index % cols;
         match screen.cell(row as u16, col as u16) {
             Some(cell) if cell.is_wide_continuation() => {}
-            Some(cell) if cell.has_contents() => out.push_str(&cell.contents()),
+            Some(cell) if cell.has_contents() => out.push_str(cell.contents()),
             _ => out.push(' '),
         }
     }

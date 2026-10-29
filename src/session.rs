@@ -445,7 +445,7 @@ impl Session {
             return Ok(());
         }
         self.size = size;
-        self.parser.set_size(size.0, size.1);
+        self.parser.screen_mut().set_size(size.0, size.1);
         self.overlay.clear(self.parser.screen(), &mut self.out);
         self.master.resize(pty_size(size.0, size.1))?;
         self.redraw = true;
