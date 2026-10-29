@@ -35,11 +35,10 @@ pub struct Item {
     /// The token as it will be typed, already quoted for the shell.
     pub text: String,
     pub description: Option<String>,
-    /// More can follow without a space, as after a directory.
-    pub open: bool,
 }
 
 impl Item {
+    /// `open` leaves a quote unclosed, so more can be typed after a directory.
     fn new(
         label: String,
         value: &str,
@@ -52,18 +51,12 @@ impl Item {
             label,
             text: quote(value, token.quote, quoting, open),
             description,
-            open,
         }
     }
 
     /// A suggestion that is typed as it is shown.
     fn word(value: &str, description: Option<String>, token: &Token, quoting: Quoting) -> Item {
         Item::new(value.to_string(), value, description, false, token, quoting)
-    }
-
-    /// Whether accepting this item would leave the token `raw` as it is.
-    pub fn matches(&self, raw: &str) -> bool {
-        self.text == raw || (self.open && self.text.strip_suffix(['/', '\\']) == Some(raw))
     }
 }
 
@@ -118,6 +111,17 @@ pub fn complete(line: &str, ctx: &mut Context) -> Completion {
     let mut items = match parsed.words[skip..].split_first() {
         // Nothing is suggested on an empty line.
         None if token.raw.is_empty() => Vec::new(),
+        // A command with a spec, typed in full, already lists what can
+        // follow it, as if the space were typed.
+        None if specs::find(&token.value).is_some() => {
+            arguments(&token.value, &[], &Token::default(), ctx)
+                .into_iter()
+                .map(|item| Item {
+                    text: format!("{} {}", token.raw, item.text),
+                    ..item
+                })
+                .collect()
+        }
         None => command_names(&token, ctx),
         Some((name, rest)) => arguments(name, rest, &token, ctx),
     };
@@ -164,13 +168,7 @@ fn command_names(token: &Token, ctx: &mut Context) -> Vec<Item> {
 fn arguments(name: &str, rest: &[String], token: &Token, ctx: &mut Context) -> Vec<Item> {
     let quoting = ctx.shell.quoting();
     let Some(spec) = specs::find(name) else {
-        // Unknown commands get paths, but only once something is typed, so
-        // Enter after a bare space still runs the line.
-        return if token.raw.is_empty() {
-            Vec::new()
-        } else {
-            paths::list(token, ctx, false)
-        };
+        return paths::list(token, ctx, false);
     };
     let mut node = spec;
     let mut positional = 0;
@@ -305,10 +303,10 @@ mod tests {
     }
 
     #[test]
-    fn files_need_a_typed_prefix_for_unknown_commands() {
+    fn unknown_commands_get_paths() {
         let dir = sandbox("files");
         let mut ctx = Context::new(Shell::Zsh, dir.clone());
-        assert!(texts("frobnicate ", &mut ctx).is_empty());
+        assert_eq!(texts("frobnicate ", &mut ctx).len(), 5);
         assert_eq!(texts("frobnicate no", &mut ctx), ["notes.txt"]);
         assert_eq!(texts("cat src/m", &mut ctx), ["src/main.rs"]);
         fs::remove_dir_all(dir).unwrap();
@@ -341,10 +339,12 @@ mod tests {
     }
 
     #[test]
-    fn exact_matches_run_instead_of_accepting() {
-        let item = Item::new("src/".into(), "src/", None, true, &Token::default(), Quoting::Posix);
-        assert!(item.matches("src"));
-        assert!(item.matches("src/"));
-        assert!(!item.matches("sr"));
+    fn a_full_command_lists_what_follows_it() {
+        let dir = sandbox("full");
+        let mut ctx = Context::new(Shell::Bash, dir.clone());
+        let expected = ["cd Documents/", "cd Downloads/", "cd My\\ Music/", "cd src/"];
+        assert_eq!(texts("cd", &mut ctx), expected);
+        assert!(texts("git", &mut ctx).contains(&"git commit".to_string()));
+        fs::remove_dir_all(dir).unwrap();
     }
 }
