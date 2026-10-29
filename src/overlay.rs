@@ -7,6 +7,7 @@ use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 use vt100::Screen;
 
 use crate::complete::Item;
+use crate::screen::screen_size;
 
 /// The most list rows shown at once; the list scrolls past this.
 const MAX_ROWS: usize = 8;
@@ -48,13 +49,13 @@ impl Overlay {
         if self.rows.is_empty() {
             return;
         }
-        let formatted: Vec<Vec<u8>> = screen.rows_formatted(0, screen.size().1).collect();
+        let formatted: Vec<String> = screen.rows_formatted(0, screen_size(screen).1).collect();
         self.rows.sort_unstable();
         self.rows.dedup();
         for &row in &self.rows {
             if let Some(content) = formatted.get(usize::from(row)) {
                 let _ = write!(out, "\x1b[{};1H\x1b[0m\x1b[2K", row + 1);
-                out.extend_from_slice(content);
+                out.extend_from_slice(content.as_bytes());
             }
         }
         self.rows.clear();
@@ -79,7 +80,7 @@ impl Overlay {
 
     /// Draws the list below the cursor, or above it when there is no room.
     fn list(&mut self, screen: &Screen, view: &View, out: &mut Vec<u8>) {
-        let (rows, cols) = screen.size();
+        let (rows, cols) = screen_size(screen);
         let (row, col) = screen.cursor_position();
         let below = usize::from(rows.saturating_sub(row + 1));
         let wanted = view.items.len().min(MAX_ROWS);
@@ -143,7 +144,7 @@ impl Overlay {
 fn restore_cursor(screen: &Screen, out: &mut Vec<u8>) {
     let (row, col) = screen.cursor_position();
     let _ = write!(out, "\x1b[0m\x1b[{};{}H", row + 1, col + 1);
-    out.extend_from_slice(&screen.attributes_formatted());
+    out.extend_from_slice(screen.attributes_formatted().as_bytes());
     if !screen.hide_cursor() {
         out.extend_from_slice(b"\x1b[?25h");
     }
