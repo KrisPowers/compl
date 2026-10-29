@@ -1,0 +1,29 @@
+[
+  { "name": "cd", "aliases": ["chdir", "pushd"], "description": "Change directory", "args": "directory" },
+  { "name": "Set-Location", "aliases": ["sl", "Push-Location"], "description": "Change directory", "args": "directory" },
+  { "name": "mkdir", "aliases": ["md"], "description": "Make directories", "args": "directory",
+    "options": [ { "name": "-p", "description": "Make parent directories as needed" } ] },
+  { "name": "rmdir", "aliases": ["rd"], "description": "Remove empty directories", "args": "directory" },
+  { "name": "ls", "aliases": ["dir", "gci", "Get-ChildItem", "eza", "exa", "lsd", "tree"], "description": "List directory contents", "args": "path",
+    "options": [
+      { "name": "-a", "description": "Include hidden entries" },
+      { "name": "-l", "description": "Long listing" },
+      { "name": "-la", "description": "Long listing, hidden entries too" },
+      { "name": "-h", "description": "Human-readable sizes" }
+    ] },
+  { "name": "cat", "aliases": ["bat", "less", "more", "head", "tail", "type", "gc", "Get-Content", "wc", "file", "stat"], "description": "Show file contents", "args": "path" },
+  { "name": "cp", "aliases": ["copy", "Copy-Item"], "description": "Copy files", "args": "path",
+    "options": [ { "name": "-r", "description": "Copy directories recursively" } ] },
+  { "name": "mv", "aliases": ["move", "ren", "rename", "Move-Item", "Rename-Item"], "description": "Move or rename files", "args": "path" },
+  { "name": "rm", "aliases": ["del", "erase", "Remove-Item", "unlink"], "description": "Remove files", "args": "path",
+    "options": [ { "name": "-r", "description": "Remove directories recursively" }, { "name": "-f", "description": "Never prompt" } ] },
+  { "name": "touch", "aliases": ["New-Item", "ni"], "description": "Create files", "args": "path" },
+  { "name": "chmod", "aliases": ["chown", "chgrp"], "description": "Change file mode or owner", "args": "path" },
+  { "name": "du", "aliases": ["df"], "description": "Show disk usage", "args": "path" },
+  { "name": "vim", "aliases": ["vi", "nvim", "nano", "emacs", "micro", "hx", "code", "subl", "notepad", "notepad++"], "description": "Edit files", "args": "path" },
+  { "name": "open", "aliases": ["xdg-open", "start", "explorer", "Invoke-Item", "ii"], "description": "Open with the default app", "args": "path" },
+  { "name": "source", "aliases": ["."], "description": "Run a script in this shell", "args": "path" },
+  { "name": "tar", "aliases": ["zip", "unzip", "gzip", "gunzip", "Expand-Archive", "Compress-Archive"], "description": "Work with archives", "args": "path" },
+  { "name": "Test-Path", "aliases": ["Resolve-Path", "Get-Item", "gi", "Split-Path"], "description": "Work with a path", "args": "path" },
+  { "name": "bash", "aliases": ["sh", "zsh", "fish", "pwsh", "powershell", "node", "deno", "bun", "ruby", "perl", "php", "lua"], "description": "Run a script", "args": "path" }
+]

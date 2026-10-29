@@ -1,0 +1,42 @@
+[
+  {
+    "name": "docker",
+    "subcommands": [
+      { "name": "build", "description": "Build an image", "args": "directory",
+        "options": [ { "name": "--tag", "description": "Name the image" }, { "name": "--file", "description": "Use this Dockerfile" } ] },
+      { "name": "compose", "description": "Run multi-container apps",
+        "subcommands": [
+          { "name": "build", "description": "Build services" },
+          { "name": "down", "description": "Stop and remove containers" },
+          { "name": "exec", "description": "Run a command in a service" },
+          { "name": "logs", "description": "Show service logs" },
+          { "name": "ps", "description": "List containers" },
+          { "name": "pull", "description": "Pull service images" },
+          { "name": "restart", "description": "Restart services" },
+          { "name": "up", "description": "Create and start containers" }
+        ] },
+      { "name": "container", "description": "Manage containers", "subcommands": [ { "name": "ls" }, { "name": "prune" }, { "name": "rm" }, { "name": "stop" } ] },
+      { "name": "cp", "description": "Copy files to or from a container", "args": "path" },
+      { "name": "exec", "description": "Run a command in a running container" },
+      { "name": "image", "description": "Manage images", "subcommands": [ { "name": "ls" }, { "name": "prune" }, { "name": "rm" } ] },
+      { "name": "images", "description": "List images" },
+      { "name": "inspect", "description": "Show low-level details" },
+      { "name": "kill", "description": "Kill running containers" },
+      { "name": "login", "description": "Sign in to a registry" },
+      { "name": "logs", "description": "Show container logs" },
+      { "name": "network", "description": "Manage networks", "subcommands": [ { "name": "create" }, { "name": "ls" }, { "name": "rm" } ] },
+      { "name": "ps", "description": "List containers" },
+      { "name": "pull", "description": "Download an image" },
+      { "name": "push", "description": "Upload an image" },
+      { "name": "restart", "description": "Restart containers" },
+      { "name": "rm", "description": "Remove containers" },
+      { "name": "rmi", "description": "Remove images" },
+      { "name": "run", "description": "Run a command in a new container" },
+      { "name": "start", "description": "Start stopped containers" },
+      { "name": "stop", "description": "Stop running containers" },
+      { "name": "system", "description": "Manage Docker", "subcommands": [ { "name": "df" }, { "name": "info" }, { "name": "prune" } ] },
+      { "name": "tag", "description": "Tag an image" },
+      { "name": "volume", "description": "Manage volumes", "subcommands": [ { "name": "create" }, { "name": "ls" }, { "name": "rm" } ] }
+    ]
+  }
+]

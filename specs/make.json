@@ -1,0 +1,4 @@
+[
+  { "name": "make", "aliases": ["gmake"], "description": "Build Makefile targets", "args": "target",
+    "options": [ { "name": "-j", "description": "Run jobs in parallel" }, { "name": "-n", "description": "Print commands without running them" } ] }
+]

@@ -1,0 +1,20 @@
+[
+  { "name": "python", "aliases": ["python3", "py", "pypy"], "description": "Run a Python script", "args": "path",
+    "options": [ { "name": "-m", "description": "Run a module" }, { "name": "-c", "description": "Run a command string" } ] },
+  {
+    "name": "pip",
+    "aliases": ["pip3"],
+    "subcommands": [
+      { "name": "cache", "description": "Manage the wheel cache" },
+      { "name": "check", "description": "Check dependencies are compatible" },
+      { "name": "download", "description": "Download packages" },
+      { "name": "freeze", "description": "Print installed packages as requirements" },
+      { "name": "install", "description": "Install packages",
+        "options": [ { "name": "--editable", "description": "Install a project in editable mode" }, { "name": "--requirement", "description": "Install from a requirements file" }, { "name": "--upgrade", "description": "Upgrade to the newest version" } ] },
+      { "name": "list", "description": "List installed packages" },
+      { "name": "show", "description": "Show package details" },
+      { "name": "uninstall", "description": "Remove packages" },
+      { "name": "wheel", "description": "Build wheels" }
+    ]
+  }
+]

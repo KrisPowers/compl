@@ -1,0 +1,30 @@
+[
+  {
+    "name": "gh",
+    "subcommands": [
+      { "name": "api", "description": "Make an API request" },
+      { "name": "auth", "description": "Sign in and out", "subcommands": [ { "name": "login" }, { "name": "logout" }, { "name": "status" }, { "name": "token" } ] },
+      { "name": "browse", "description": "Open the repository in a browser" },
+      { "name": "gist", "description": "Manage gists", "subcommands": [ { "name": "create" }, { "name": "list" }, { "name": "view" } ] },
+      { "name": "issue", "description": "Manage issues",
+        "subcommands": [ { "name": "close" }, { "name": "comment" }, { "name": "create" }, { "name": "list" }, { "name": "view" } ] },
+      { "name": "pr", "description": "Manage pull requests",
+        "subcommands": [
+          { "name": "checkout", "description": "Check out a pull request" },
+          { "name": "checks", "description": "Show CI status" },
+          { "name": "create", "description": "Open a pull request" },
+          { "name": "diff", "description": "Show the changes" },
+          { "name": "list", "description": "List pull requests" },
+          { "name": "merge", "description": "Merge a pull request" },
+          { "name": "review", "description": "Review a pull request" },
+          { "name": "view", "description": "Show a pull request" }
+        ] },
+      { "name": "release", "description": "Manage releases", "subcommands": [ { "name": "create" }, { "name": "download" }, { "name": "list" }, { "name": "upload" }, { "name": "view" } ] },
+      { "name": "repo", "description": "Manage repositories", "subcommands": [ { "name": "clone" }, { "name": "create" }, { "name": "edit" }, { "name": "fork" }, { "name": "view" } ] },
+      { "name": "run", "description": "Manage workflow runs", "subcommands": [ { "name": "list" }, { "name": "rerun" }, { "name": "view" }, { "name": "watch" } ] },
+      { "name": "secret", "description": "Manage secrets", "subcommands": [ { "name": "list" }, { "name": "remove" }, { "name": "set" } ] },
+      { "name": "status", "description": "Show your work across repositories" },
+      { "name": "workflow", "description": "Manage workflows", "subcommands": [ { "name": "list" }, { "name": "run" }, { "name": "view" } ] }
+    ]
+  }
+]

@@ -1,0 +1,61 @@
+[
+  {
+    "name": "npm",
+    "subcommands": [
+      { "name": "audit", "description": "Check dependencies for vulnerabilities" },
+      { "name": "cache", "description": "Manage the package cache" },
+      { "name": "ci", "description": "Clean install from the lockfile" },
+      { "name": "config", "description": "Manage settings" },
+      { "name": "exec", "description": "Run a command from a package" },
+      { "name": "init", "description": "Create a package.json" },
+      { "name": "install", "aliases": ["i"], "description": "Install dependencies",
+        "options": [ { "name": "--save-dev", "description": "Add as a dev dependency" }, { "name": "--global", "description": "Install globally" } ] },
+      { "name": "link", "description": "Symlink a package folder" },
+      { "name": "list", "aliases": ["ls"], "description": "List installed packages" },
+      { "name": "login", "description": "Sign in to the registry" },
+      { "name": "outdated", "description": "Check for outdated packages" },
+      { "name": "pack", "description": "Create a tarball" },
+      { "name": "publish", "description": "Publish a package" },
+      { "name": "run", "aliases": ["run-script"], "description": "Run a package script", "args": "script" },
+      { "name": "start", "description": "Run the start script" },
+      { "name": "test", "aliases": ["t"], "description": "Run the test script" },
+      { "name": "uninstall", "aliases": ["remove", "rm"], "description": "Remove a package" },
+      { "name": "update", "description": "Update packages" },
+      { "name": "version", "description": "Bump the package version" },
+      { "name": "view", "description": "Show package info" }
+    ]
+  },
+  {
+    "name": "yarn",
+    "args": "script",
+    "subcommands": [
+      { "name": "add", "description": "Add a dependency" },
+      { "name": "dlx", "description": "Run a package without installing it" },
+      { "name": "info", "description": "Show package info" },
+      { "name": "init", "description": "Create a package.json" },
+      { "name": "install", "description": "Install dependencies" },
+      { "name": "remove", "description": "Remove a dependency" },
+      { "name": "run", "description": "Run a package script", "args": "script" },
+      { "name": "upgrade", "description": "Upgrade dependencies" },
+      { "name": "why", "description": "Explain why a package is installed" },
+      { "name": "workspace", "description": "Run a command in a workspace" }
+    ]
+  },
+  {
+    "name": "pnpm",
+    "args": "script",
+    "subcommands": [
+      { "name": "add", "description": "Add a dependency" },
+      { "name": "dlx", "description": "Run a package without installing it" },
+      { "name": "exec", "description": "Run a command in the project" },
+      { "name": "install", "aliases": ["i"], "description": "Install dependencies" },
+      { "name": "list", "aliases": ["ls"], "description": "List installed packages" },
+      { "name": "outdated", "description": "Check for outdated packages" },
+      { "name": "publish", "description": "Publish a package" },
+      { "name": "remove", "aliases": ["rm"], "description": "Remove a dependency" },
+      { "name": "run", "description": "Run a package script", "args": "script" },
+      { "name": "update", "aliases": ["up"], "description": "Update dependencies" },
+      { "name": "why", "description": "Explain why a package is installed" }
+    ]
+  }
+]

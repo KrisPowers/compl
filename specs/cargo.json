@@ -1,0 +1,49 @@
+[
+  {
+    "name": "cargo",
+    "options": [ { "name": "--help", "description": "Show help" }, { "name": "--version", "description": "Print the cargo version" } ],
+    "subcommands": [
+      { "name": "add", "description": "Add a dependency" },
+      { "name": "bench", "description": "Run benchmarks" },
+      { "name": "build", "description": "Compile the package",
+        "options": [ { "name": "--release", "description": "Build with optimizations" }, { "name": "--target", "description": "Build for this target" } ] },
+      { "name": "check", "description": "Check for errors without building" },
+      { "name": "clean", "description": "Remove build output" },
+      { "name": "clippy", "description": "Run the linter" },
+      { "name": "doc", "description": "Build documentation",
+        "options": [ { "name": "--open", "description": "Open the docs in a browser" } ] },
+      { "name": "fetch", "description": "Download dependencies" },
+      { "name": "fix", "description": "Apply compiler suggestions" },
+      { "name": "fmt", "description": "Format the code" },
+      { "name": "init", "description": "Create a package in this directory" },
+      { "name": "install", "description": "Install a binary" },
+      { "name": "metadata", "description": "Print package metadata as JSON" },
+      { "name": "new", "description": "Create a package" },
+      { "name": "publish", "description": "Upload to the registry" },
+      { "name": "remove", "description": "Remove a dependency" },
+      { "name": "run", "description": "Build and run a binary",
+        "options": [ { "name": "--release", "description": "Build with optimizations" }, { "name": "--bin", "description": "Run this binary" } ] },
+      { "name": "search", "description": "Search the registry" },
+      { "name": "test", "description": "Run tests" },
+      { "name": "tree", "description": "Show the dependency tree" },
+      { "name": "uninstall", "description": "Remove an installed binary" },
+      { "name": "update", "description": "Update the lockfile" }
+    ]
+  },
+  {
+    "name": "rustup",
+    "subcommands": [
+      { "name": "component", "description": "Manage toolchain components", "subcommands": [ { "name": "add" }, { "name": "list" }, { "name": "remove" } ] },
+      { "name": "default", "description": "Set the default toolchain" },
+      { "name": "doc", "description": "Open the local docs" },
+      { "name": "override", "description": "Pin a toolchain to a directory" },
+      { "name": "run", "description": "Run a command with a toolchain" },
+      { "name": "self", "description": "Manage rustup itself" },
+      { "name": "show", "description": "Show installed toolchains" },
+      { "name": "target", "description": "Manage compile targets", "subcommands": [ { "name": "add" }, { "name": "list" }, { "name": "remove" } ] },
+      { "name": "toolchain", "description": "Manage toolchains", "subcommands": [ { "name": "install" }, { "name": "list" }, { "name": "uninstall" } ] },
+      { "name": "update", "description": "Update toolchains" },
+      { "name": "which", "description": "Show which binary would run" }
+    ]
+  }
+]

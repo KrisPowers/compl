@@ -1,0 +1,89 @@
+[
+  {
+    "name": "brew",
+    "subcommands": [
+      { "name": "autoremove", "description": "Remove unused dependencies" },
+      { "name": "cleanup", "description": "Remove old versions" },
+      { "name": "deps", "description": "Show dependencies" },
+      { "name": "doctor", "description": "Check for problems" },
+      { "name": "info", "description": "Show formula info" },
+      { "name": "install", "description": "Install a formula or cask" },
+      { "name": "leaves", "description": "List formulae nothing depends on" },
+      { "name": "list", "description": "List installed formulae" },
+      { "name": "outdated", "description": "List formulae with updates" },
+      { "name": "pin", "description": "Hold a formula at its version" },
+      { "name": "reinstall", "description": "Reinstall a formula" },
+      { "name": "search", "description": "Search formulae" },
+      { "name": "services", "description": "Manage background services", "subcommands": [ { "name": "list" }, { "name": "restart" }, { "name": "start" }, { "name": "stop" } ] },
+      { "name": "tap", "description": "Add a third-party repository" },
+      { "name": "uninstall", "description": "Remove a formula" },
+      { "name": "unpin", "description": "Let a pinned formula upgrade" },
+      { "name": "update", "description": "Fetch the newest Homebrew" },
+      { "name": "upgrade", "description": "Upgrade installed formulae" }
+    ]
+  },
+  {
+    "name": "apt",
+    "aliases": ["apt-get"],
+    "subcommands": [
+      { "name": "autoremove", "description": "Remove unused packages" },
+      { "name": "full-upgrade", "description": "Upgrade, removing packages if needed" },
+      { "name": "install", "description": "Install packages", "args": "path" },
+      { "name": "list", "description": "List packages" },
+      { "name": "purge", "description": "Remove packages and their config" },
+      { "name": "remove", "description": "Remove packages" },
+      { "name": "search", "description": "Search packages" },
+      { "name": "show", "description": "Show package details" },
+      { "name": "update", "description": "Refresh package lists" },
+      { "name": "upgrade", "description": "Upgrade packages" }
+    ]
+  },
+  {
+    "name": "dnf",
+    "aliases": ["yum"],
+    "subcommands": [
+      { "name": "info" }, { "name": "install" }, { "name": "list" }, { "name": "remove" },
+      { "name": "search" }, { "name": "upgrade" }
+    ]
+  },
+  {
+    "name": "pacman",
+    "options": [
+      { "name": "-Q", "description": "Query installed packages" },
+      { "name": "-R", "description": "Remove packages" },
+      { "name": "-S", "description": "Install packages" },
+      { "name": "-Ss", "description": "Search packages" },
+      { "name": "-Syu", "description": "Upgrade the system" }
+    ]
+  },
+  {
+    "name": "winget",
+    "subcommands": [
+      { "name": "export", "description": "Write installed packages to a file" },
+      { "name": "import", "description": "Install packages from a file", "args": "path" },
+      { "name": "install", "description": "Install a package" },
+      { "name": "list", "description": "List installed packages" },
+      { "name": "pin", "description": "Manage package pins" },
+      { "name": "search", "description": "Search packages" },
+      { "name": "show", "description": "Show package details" },
+      { "name": "source", "description": "Manage sources" },
+      { "name": "uninstall", "description": "Remove a package" },
+      { "name": "upgrade", "description": "Upgrade packages" }
+    ]
+  },
+  {
+    "name": "choco",
+    "subcommands": [
+      { "name": "info" }, { "name": "install" }, { "name": "list" }, { "name": "outdated" },
+      { "name": "search" }, { "name": "uninstall" }, { "name": "upgrade" }
+    ]
+  },
+  {
+    "name": "scoop",
+    "subcommands": [
+      { "name": "bucket" }, { "name": "cleanup" }, { "name": "info" }, { "name": "install" },
+      { "name": "list" }, { "name": "search" }, { "name": "status" }, { "name": "uninstall" },
+      { "name": "update" }
+    ]
+  }
+]
