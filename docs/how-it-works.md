@@ -32,13 +32,15 @@ The command line is split into words using the shell's own quoting rules (POSIX 
 
 - The first word of a command, after `sudo`, `env`, variable assignments and the like, is completed from the programs on PATH and the shell's built-in commands.
 - Later words are completed from the command's [spec](specs.md): its subcommands, its options, and its arguments, which can be paths, directories, git branches, git remotes, package.json scripts or Makefile targets.
-- Commands without a spec get file and directory names once you start typing a word.
+- Commands without a spec get file and directory names.
 
 Matching ignores case. Suggestions are sorted alphabetically, ignoring case, with digits and symbols ahead of letters, and a word sorts ahead of longer words that start with it. Each suggestion is quoted for your shell before it is typed in, so a directory called `My Music` becomes `My\ Music/` in bash and `'My Music\` in PowerShell.
 
-## Accepting a suggestion
+## Picking a suggestion
 
-Enter types the rest of the selected suggestion into the shell, as if you had typed it. When the case or quoting differs from what you typed, it erases the word first and types the whole suggestion. A space follows commands, files and subcommands; nothing follows a directory, so you can keep going into it. Suggestions then stay hidden until your next key, so the next Enter runs the line.
+The list's first row is what you typed; the suggestions follow it. Tab moves the highlight down and types the highlighted suggestion into the shell in place of the word you were typing, as if you had typed it: only the part that differs is erased and retyped. Moving back to the first row puts back what you typed. While a suggestion from the list is on the line, the list stays as it is; typing anything else makes a new list for the new line. Enter is never intercepted, so it runs whatever is on the line.
+
+A command with a spec typed in full, such as `cd` or `git`, lists what can follow it straight away; picking one adds the space for you.
 
 ## Starting from your startup file
 

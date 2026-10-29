@@ -30,15 +30,6 @@ impl Prompt {
         }
     }
 
-    /// The column suggestions must stop before, leaving a right-hand prompt
-    /// alone.
-    pub fn limit(&self, cols: u16) -> u16 {
-        match self.right {
-            Some(Some(col)) => col.saturating_sub(1),
-            _ => cols,
-        }
-    }
-
     /// The input typed so far, or `None` when the cursor is not at the end of
     /// the input on the prompt line (a program is running, the cursor moved
     /// left, or the screen changed under us).
@@ -167,7 +158,6 @@ mod tests {
         assert_eq!(prompt.read(parser.screen()).as_deref(), Some(""));
         parser.process(b"ls");
         assert_eq!(prompt.read(parser.screen()).as_deref(), Some("ls"));
-        assert_eq!(prompt.limit(20), 14);
     }
 
     #[test]

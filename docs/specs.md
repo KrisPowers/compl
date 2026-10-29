@@ -26,7 +26,7 @@ Each file holds an array of specs. A spec has these fields; only `name` is requi
 | `script` | Scripts from the nearest `package.json` |
 | `target` | Targets from the Makefile in the current directory |
 
-Leave `args` out when the arguments are free text, such as a commit message. Then Enter after a space runs the line instead of picking a suggestion.
+Leave `args` out when the arguments are free text, such as a commit message, so no list shows for them.
 
 ## Example
 

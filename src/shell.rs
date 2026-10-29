@@ -183,7 +183,7 @@ fn integration(shell: Shell, files: &[(&str, &str)]) -> Result<PathBuf> {
     Ok(dir)
 }
 
-fn cache_dir() -> PathBuf {
+pub fn cache_dir() -> PathBuf {
     let base = if cfg!(windows) {
         env::var_os("LOCALAPPDATA").map(PathBuf::from)
     } else {
