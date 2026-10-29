@@ -21,7 +21,7 @@ pub fn list(token: &Token, ctx: &Context, dirs_only: bool) -> Vec<Item> {
         return Vec::new();
     };
     // Keep whichever separator the user typed.
-    let sep = dir.chars().last().unwrap_or(ctx.shell.separator());
+    let sep = dir.chars().next_back().unwrap_or(ctx.shell.separator());
     let quoting = ctx.shell.quoting();
     let mut items = Vec::new();
     for entry in entries.take(MAX_ENTRIES).flatten() {
