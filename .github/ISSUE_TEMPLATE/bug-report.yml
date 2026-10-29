@@ -1,0 +1,44 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you typed, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The output of `autocomplete --version`.
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 15, Ubuntu 24.04, Windows 11
+    validations:
+      required: true
+  - type: input
+    id: terminal
+    attributes:
+      label: Terminal
+      placeholder: Windows Terminal, iTerm2, GNOME Terminal
+    validations:
+      required: true
+  - type: dropdown
+    id: shell
+    attributes:
+      label: Shell
+      options: [bash, zsh, fish, PowerShell 7, Windows PowerShell, cmd]
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Prompt theme or plugins
+      description: Starship, Oh My Zsh, Oh My Posh, Powerlevel10k and so on, if any.

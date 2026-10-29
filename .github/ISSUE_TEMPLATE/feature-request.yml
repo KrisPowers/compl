@@ -1,0 +1,16 @@
+name: Feature or spec request
+description: Suggest an improvement, or suggestions for a command
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What you would like
+      description: For a command spec, name the command and the subcommands or arguments you use most.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What it would make easier.
