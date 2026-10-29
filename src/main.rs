@@ -4,6 +4,7 @@
 //! byte through, and draws suggestions over the prompt while you type.
 
 mod complete;
+mod log;
 mod markers;
 mod overlay;
 mod screen;

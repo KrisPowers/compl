@@ -2,13 +2,14 @@
 
 Inline, as-you-type suggestions for commands and paths, in every terminal and shell.
 
-Type `cd` and a space, and the first matching directory appears after your cursor, dimmed. Press Tab to open the full list and move through it, keep typing to narrow it, and press Enter to put your pick on the command line. Nothing runs until you press Enter again.
+Type `cd` and a list of directories appears under your cursor. Its first row is what you typed. Press Tab to move down the list; each directory you land on goes onto the command line. Keep typing to narrow the list, and press Enter to run the line as it stands.
 
 ```text
-~/code $ cd Do|cuments/
-              Documents/
-              Downloads/
-              Dotfiles/
+~/code $ cd Documents/
+         cd
+         Documents/
+         Downloads/
+         Dotfiles/
 ```
 
 It works the same way for command names, subcommands and options (`git che` suggests `checkout`), branches, remotes, package.json scripts, Makefile targets and files.
@@ -50,18 +51,17 @@ Open a new terminal once installed. The installers accept a few environment vari
 
 ## Usage
 
-Start typing. When a suggestion shows:
+Start typing. When suggestions exist, a list shows under the cursor:
 
 | Key | What it does |
 | --- | --- |
-| Tab | Open the list, then move to the next suggestion |
-| Shift+Tab | Move to the previous suggestion |
-| Up, Down | Move through the open list |
-| Enter | Put the selected suggestion on the command line |
-| Enter again | Run the command |
-| Esc | Hide suggestions until you type again |
+| Tab | Move down the list and put that suggestion on the command line |
+| Shift+Tab | Move up the list; the first row puts back what you typed |
+| Up, Down | Move through the list once you have tabbed into it |
+| Enter | Run the command line as it stands |
+| Esc | Put back what you typed and hide the list until you type again |
 
-When what you typed already matches the suggestion, Enter runs the command straight away. When no suggestion is showing, every key behaves exactly as it does without autocomplete, so Tab still reaches your shell's own completion.
+When no list is showing, every key behaves exactly as it does without autocomplete, so Tab still reaches your shell's own completion.
 
 To try autocomplete without changing any startup file, run it directly:
 

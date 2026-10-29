@@ -2,12 +2,14 @@
 //! through, keeps a model of the screen, and draws suggestions over the
 //! prompt while you type.
 //!
-//! Keys while a suggestion shows:
-//! - Tab / Shift+Tab: open the list, then move through it.
-//! - Up / Down: move through the open list.
-//! - Enter: put the selected suggestion on the command line. Enter again runs
-//!   it. When the line already matches the suggestion, Enter runs it at once.
-//! - Esc: hide suggestions until you type again.
+//! Suggestions show as a list under the cursor. Its first row is what you
+//! typed; the rows after it are the suggestions.
+//! - Tab / Shift+Tab: move down or up the list. The highlighted suggestion
+//!   is put on the command line as you go; the first row puts back what you
+//!   typed.
+//! - Up / Down: move through the list once you have tabbed into it.
+//! - Enter: runs the command line as it stands, as usual.
+//! - Esc: put back what you typed and hide the list until you type again.
 
 use std::collections::VecDeque;
 use std::io::{Read, Write};
@@ -21,14 +23,15 @@ use portable_pty::{native_pty_system, MasterPty, PtySize};
 use unicode_width::UnicodeWidthStr;
 
 use crate::complete::{self, Completion, Context};
+use crate::log::Log;
 use crate::markers::{Chunk, Scanner};
 use crate::overlay::{Overlay, View};
-use crate::screen::{nonzero, screen_size, Prompt};
+use crate::screen::{nonzero, Prompt};
 use crate::shell::{self, Shell};
 use crate::terminal::{self, RawMode};
 
-/// How long to wait for the shell to echo typed keys before acting on Tab or
-/// Enter, so the suggestion acted on matches what is on screen.
+/// How long to wait for the shell to echo typed keys before acting on Tab,
+/// so the list acted on matches what is on screen.
 const ECHO_WAIT: Duration = Duration::from_millis(50);
 /// How long to wait for the terminal to report the cursor position.
 const CURSOR_WAIT: Duration = Duration::from_secs(1);
@@ -47,7 +50,6 @@ enum Key {
     BackTab,
     Up,
     Down,
-    Enter,
     Escape,
 }
 
@@ -60,23 +62,25 @@ impl Key {
             b"\x1b[Z" => Key::BackTab,
             b"\x1b[A" | b"\x1bOA" => Key::Up,
             b"\x1b[B" | b"\x1bOB" => Key::Down,
-            b"\r" => Key::Enter,
             b"\x1b" => Key::Escape,
             _ => return None,
         })
     }
 }
 
-/// The suggestions for the current command line and how they are shown.
+/// The suggestions for the current command line, shown as a list whose
+/// first row is what was typed.
 #[derive(Default)]
 struct Menu {
-    /// The command line the suggestions were made for; `None` when the
-    /// cursor is not at the end of a command line.
+    /// The command line as typed when the suggestions were made; `None` when
+    /// the cursor is not at the end of a command line.
     line: Option<String>,
     completion: Completion,
+    /// The highlighted row: 0 is what was typed, `n` is `items[n - 1]`.
     selected: usize,
-    open: bool,
-    /// Hidden after Esc or after a suggestion was accepted, until more input.
+    /// A row was typed into the shell and its echo has not shown yet.
+    pending: bool,
+    /// Hidden after Esc, until more input.
     suppressed: bool,
 }
 
@@ -89,15 +93,19 @@ impl Menu {
         self.has_items() && !self.suppressed
     }
 
-    fn step(&mut self, forward: bool) {
-        let len = self.completion.items.len();
-        if len > 0 {
-            self.selected = if forward {
-                (self.selected + 1) % len
-            } else {
-                (self.selected + len - 1) % len
-            };
+    /// The token the highlighted row puts on the command line.
+    fn shown(&self) -> &str {
+        match self.selected {
+            0 => &self.completion.raw,
+            n => &self.completion.items[n - 1].text,
         }
+    }
+
+    /// The whole command line the highlighted row puts on screen.
+    fn expected(&self) -> Option<String> {
+        let line = self.line.as_deref()?;
+        let base = line.strip_suffix(self.completion.raw.as_str())?;
+        Some(format!("{base}{}", self.shown()))
     }
 }
 
@@ -120,6 +128,9 @@ pub fn run(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<()> {
     drop(pty.slave);
     let reader = pty.master.try_clone_reader()?;
     let writer = pty.master.take_writer()?;
+
+    let mut log = Log::open();
+    log.line(format_args!("started {} in a {cols}x{rows} terminal", shell.name()));
 
     let (tx, rx) = mpsc::channel();
     read_stdin(tx.clone());
@@ -145,6 +156,7 @@ pub fn run(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<()> {
         stale: false,
         redraw: false,
         out: Vec::new(),
+        log,
     }
     .run()
 }
@@ -209,6 +221,7 @@ struct Session {
     redraw: bool,
     /// Bytes for the terminal, written once per loop.
     out: Vec<u8>,
+    log: Log,
 }
 
 impl Session {
@@ -262,12 +275,17 @@ impl Session {
                     self.out.extend_from_slice(&data);
                 }
                 Chunk::Prompt(cwd) => {
+                    self.log.line(format_args!("prompt in {cwd}"));
                     self.ctx.cwd = PathBuf::from(cwd);
                     self.prompt = None;
                     self.menu = Menu::default();
                 }
                 Chunk::Path(path) => self.ctx.set_path(&path),
-                Chunk::Input => self.prompt = Some(Prompt::capture(self.parser.screen())),
+                Chunk::Input => {
+                    let (row, col) = self.parser.screen().cursor_position();
+                    self.log.line(format_args!("input starts at row {row}, column {col}"));
+                    self.prompt = Some(Prompt::capture(self.parser.screen()));
+                }
             }
         }
         self.stale = false;
@@ -295,26 +313,32 @@ impl Session {
         }
         let handled = match key {
             Some(Key::Tab | Key::BackTab) if self.menu.has_items() => {
-                if self.menu.suppressed || !self.menu.open {
-                    self.menu.suppressed = false;
-                } else {
-                    self.menu.step(key == Some(Key::Tab));
-                }
-                self.menu.open = true;
+                self.menu.suppressed = false;
+                self.step(key == Some(Key::Tab))?;
                 true
             }
-            Some(Key::Up | Key::Down) if self.menu.visible() && self.menu.open => {
-                self.menu.step(key == Some(Key::Down));
+            Some(Key::Up | Key::Down) if self.menu.visible() && self.menu.selected > 0 => {
+                self.step(key == Some(Key::Down))?;
                 true
             }
-            Some(Key::Enter) if self.menu.visible() => self.accept()?,
             Some(Key::Escape) if self.menu.visible() => {
+                if self.menu.selected > 0 {
+                    self.select(0)?;
+                }
                 self.menu.suppressed = true;
-                self.menu.open = false;
                 true
             }
             _ => false,
         };
+        if key.is_some() {
+            let menu = &self.menu;
+            let rows = menu.completion.items.len();
+            let text = String::from_utf8_lossy(&bytes);
+            self.log.line(format_args!(
+                "key {text:?}: handled {handled}, {rows} suggestions, row {}",
+                menu.selected
+            ));
+        }
         if !handled {
             self.forward(&bytes)?;
         }
@@ -322,28 +346,31 @@ impl Session {
         Ok(())
     }
 
-    /// Types the selected suggestion into the shell. Returns false, leaving
-    /// Enter to run the line, when the line already says the same thing.
-    fn accept(&mut self) -> Result<bool> {
-        let Completion { raw, items } = &self.menu.completion;
-        let item = &items[self.menu.selected];
-        if item.matches(raw) {
-            return Ok(false);
-        }
-        let mut keys = match item.text.strip_prefix(raw.as_str()) {
-            Some(rest) => rest.to_string(),
-            // The case or quoting differs: erase the token and retype it.
-            None => "\x7f".repeat(raw.chars().count()) + &item.text,
+    /// Moves the highlight one row down or up, wrapping around.
+    fn step(&mut self, forward: bool) -> Result<()> {
+        let rows = self.menu.completion.items.len() + 1;
+        let row = if forward {
+            (self.menu.selected + 1) % rows
+        } else {
+            (self.menu.selected + rows - 1) % rows
         };
-        if !item.open {
-            keys.push(' ');
-        }
+        self.select(row)
+    }
+
+    /// Highlights `row` and puts what it stands for on the command line,
+    /// erasing only the part that differs from what is there now.
+    fn select(&mut self, row: usize) -> Result<()> {
+        let from = self.menu.shown().to_string();
+        self.menu.selected = row;
+        let to = self.menu.shown();
+        let common = from.chars().zip(to.chars()).take_while(|(a, b)| a == b).count();
+        let erase = "\x7f".repeat(from.chars().count() - common);
+        let keys = erase + &to.chars().skip(common).collect::<String>();
         self.pty.write_all(keys.as_bytes())?;
         self.pty.flush()?;
-        self.menu.suppressed = true;
-        self.menu.open = false;
+        self.menu.pending = true;
         self.stale = true;
-        Ok(true)
+        Ok(())
     }
 
     fn forward(&mut self, bytes: &[u8]) -> Result<()> {
@@ -356,6 +383,7 @@ impl Session {
             self.menu = Menu::default();
         } else {
             self.menu.suppressed = false;
+            self.menu.pending = false;
         }
         self.stale = true;
         Ok(())
@@ -378,19 +406,32 @@ impl Session {
     }
 
     /// Reads the command line off the screen and recomputes the suggestions
-    /// when it changed.
+    /// when it changed. While a highlighted row is on the line, the list
+    /// stays as it is.
     fn update(&mut self) {
         let screen = self.parser.screen();
-        let line = self.prompt.as_mut().and_then(|prompt| prompt.read(screen));
-        match line {
-            None => self.menu.line = None,
-            Some(line) => {
-                if self.menu.line.as_ref() != Some(&line) {
-                    self.menu.completion = complete::complete(&line, &mut self.ctx);
-                    self.menu.selected = 0;
-                    self.menu.line = Some(line);
-                }
+        let Some(line) = self.prompt.as_mut().and_then(|prompt| prompt.read(screen)) else {
+            if self.menu.line.is_some() && !self.menu.pending {
+                self.log.line(format_args!("cursor is not at the end of the input"));
+                self.menu.line = None;
             }
+            return;
+        };
+        if self.menu.selected > 0 || self.menu.pending {
+            if self.menu.expected().as_deref() == Some(line.as_str()) {
+                self.menu.pending = false;
+                return;
+            }
+            if self.menu.pending {
+                return;
+            }
+        }
+        if self.menu.line.as_ref() != Some(&line) {
+            self.menu.completion = complete::complete(&line, &mut self.ctx);
+            self.menu.selected = 0;
+            let count = self.menu.completion.items.len();
+            self.log.line(format_args!("line {line:?}: {count} suggestions"));
+            self.menu.line = Some(line);
         }
     }
 
@@ -399,24 +440,14 @@ impl Session {
         self.update();
         let screen = self.parser.screen();
         self.overlay.clear(screen, &mut self.out);
-        let Some(prompt) = &self.prompt else {
-            return;
-        };
-        if !self.menu.visible() {
+        if self.prompt.is_none() || !self.menu.visible() || self.menu.pending {
             return;
         }
-        let Completion { raw, items } = &self.menu.completion;
         let view = View {
-            ghost: items[self.menu.selected]
-                .text
-                .chars()
-                .skip(raw.chars().count())
-                .collect(),
-            items,
+            typed: &self.menu.completion.raw,
+            items: &self.menu.completion.items,
             selected: self.menu.selected,
-            open: self.menu.open,
-            token_width: raw.width(),
-            limit: prompt.limit(screen_size(screen).1),
+            token_width: self.menu.shown().width(),
         };
         self.overlay.draw(screen, &view, &mut self.out);
     }
@@ -493,7 +524,6 @@ mod tests {
     fn reads_keys() {
         assert!(matches!(Key::parse(b"\t"), Some(Key::Tab)));
         assert!(matches!(Key::parse(b"\x1b[Z"), Some(Key::BackTab)));
-        assert!(matches!(Key::parse(b"\r"), Some(Key::Enter)));
         assert!(Key::parse(b"ls\r").is_none());
     }
 

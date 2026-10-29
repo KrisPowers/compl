@@ -21,6 +21,10 @@ That is how it works: the startup line starts `autocomplete run`, which starts y
 
 If a session ever misbehaves, exiting the shell returns you to the outer one.
 
+## The session log
+
+Every session writes what it saw (prompt markers, the command line it read, how many suggestions it found and which keys it handled) to `session.log` in autocomplete's cache directory: `%LOCALAPPDATA%\autocomplete` on Windows, `~/.cache/autocomplete` elsewhere. Each new session replaces the last one's log.
+
 ## Reporting a bug
 
-Open an [issue](https://github.com/KrisPowers/autocomplete/issues/new/choose) with your OS, terminal, shell and version (`autocomplete --version`), and what you typed.
+Open an [issue](https://github.com/KrisPowers/autocomplete/issues/new/choose) with your OS, terminal, shell and version (`autocomplete --version`), what you typed, and the session log.
