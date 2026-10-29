@@ -1,0 +1,33 @@
+[
+  {
+    "name": "kubectl",
+    "aliases": ["k"],
+    "subcommands": [
+      { "name": "apply", "description": "Apply a configuration", "args": "path",
+        "options": [ { "name": "-f", "description": "Read from this file" } ] },
+      { "name": "config", "description": "Manage kubeconfig",
+        "subcommands": [ { "name": "current-context" }, { "name": "get-contexts" }, { "name": "use-context" }, { "name": "view" } ] },
+      { "name": "cp", "description": "Copy files to or from containers", "args": "path" },
+      { "name": "create", "description": "Create a resource" },
+      { "name": "delete", "description": "Delete resources" },
+      { "name": "describe", "description": "Show details of resources" },
+      { "name": "edit", "description": "Edit a resource" },
+      { "name": "exec", "description": "Run a command in a container" },
+      { "name": "explain", "description": "Document a resource type" },
+      { "name": "expose", "description": "Expose a resource as a service" },
+      { "name": "get", "description": "List resources",
+        "subcommands": [
+          { "name": "configmaps" }, { "name": "deployments" }, { "name": "ingresses" }, { "name": "namespaces" },
+          { "name": "nodes" }, { "name": "pods" }, { "name": "secrets" }, { "name": "services" }
+        ] },
+      { "name": "label", "description": "Update labels" },
+      { "name": "logs", "description": "Show container logs" },
+      { "name": "port-forward", "description": "Forward local ports to a pod" },
+      { "name": "rollout", "description": "Manage rollouts", "subcommands": [ { "name": "history" }, { "name": "restart" }, { "name": "status" }, { "name": "undo" } ] },
+      { "name": "run", "description": "Run an image in a pod" },
+      { "name": "scale", "description": "Set the replica count" },
+      { "name": "top", "description": "Show resource usage" },
+      { "name": "version", "description": "Print client and server versions" }
+    ]
+  }
+]

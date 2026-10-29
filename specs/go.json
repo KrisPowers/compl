@@ -1,0 +1,22 @@
+[
+  {
+    "name": "go",
+    "subcommands": [
+      { "name": "build", "description": "Compile packages", "args": "path" },
+      { "name": "clean", "description": "Remove build output" },
+      { "name": "doc", "description": "Show documentation" },
+      { "name": "env", "description": "Print Go environment" },
+      { "name": "fmt", "description": "Format package sources", "args": "path" },
+      { "name": "generate", "description": "Run go:generate directives" },
+      { "name": "get", "description": "Add dependencies" },
+      { "name": "install", "description": "Compile and install packages" },
+      { "name": "list", "description": "List packages" },
+      { "name": "mod", "description": "Manage modules", "subcommands": [ { "name": "download" }, { "name": "init" }, { "name": "tidy" }, { "name": "vendor" }, { "name": "why" } ] },
+      { "name": "run", "description": "Compile and run", "args": "path" },
+      { "name": "test", "description": "Run tests", "args": "path" },
+      { "name": "version", "description": "Print the Go version" },
+      { "name": "vet", "description": "Report likely mistakes", "args": "path" },
+      { "name": "work", "description": "Manage workspaces" }
+    ]
+  }
+]

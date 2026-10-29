@@ -1,0 +1,108 @@
+[
+  {
+    "name": "git",
+    "options": [
+      { "name": "--help", "description": "Show help" },
+      { "name": "--version", "description": "Print the git version" },
+      { "name": "-C", "description": "Run as if started in this directory" }
+    ],
+    "subcommands": [
+      { "name": "add", "description": "Stage file contents", "args": "path",
+        "options": [
+          { "name": "--all", "description": "Stage every change" },
+          { "name": "--patch", "description": "Pick hunks to stage" },
+          { "name": "--update", "description": "Stage changes to tracked files" }
+        ] },
+      { "name": "bisect", "description": "Binary search for the commit that broke something",
+        "subcommands": [
+          { "name": "bad" }, { "name": "good" }, { "name": "reset" }, { "name": "start" }, { "name": "skip" }
+        ] },
+      { "name": "blame", "description": "Show who last changed each line", "args": "path" },
+      { "name": "branch", "description": "List, create or delete branches", "args": "branch",
+        "options": [
+          { "name": "--all", "description": "List local and remote branches" },
+          { "name": "--delete", "description": "Delete a branch" },
+          { "name": "--move", "description": "Rename a branch" },
+          { "name": "-D", "description": "Delete a branch even if unmerged" }
+        ] },
+      { "name": "checkout", "description": "Switch branches or restore files", "args": "branch",
+        "options": [ { "name": "-b", "description": "Create and switch to a new branch" } ] },
+      { "name": "cherry-pick", "description": "Apply the changes from existing commits" },
+      { "name": "clean", "description": "Remove untracked files",
+        "options": [ { "name": "-n", "description": "Show what would be removed" }, { "name": "-fd", "description": "Remove files and directories" } ] },
+      { "name": "clone", "description": "Copy a repository into a new directory" },
+      { "name": "commit", "description": "Record staged changes",
+        "options": [
+          { "name": "--all", "description": "Stage tracked changes first" },
+          { "name": "--amend", "description": "Replace the last commit" },
+          { "name": "--message", "description": "Use this commit message" },
+          { "name": "--no-edit", "description": "Keep the existing message" },
+          { "name": "-m", "description": "Use this commit message" }
+        ] },
+      { "name": "config", "description": "Read and write settings",
+        "options": [ { "name": "--global", "description": "Use the user-wide config" }, { "name": "--list", "description": "List all settings" } ] },
+      { "name": "describe", "description": "Name a commit after the nearest tag" },
+      { "name": "diff", "description": "Show changes", "args": "path",
+        "options": [ { "name": "--staged", "description": "Compare staged changes" }, { "name": "--stat", "description": "Summarize changes per file" } ] },
+      { "name": "fetch", "description": "Download objects and refs", "args": "remote",
+        "options": [ { "name": "--all", "description": "Fetch every remote" }, { "name": "--prune", "description": "Drop refs deleted on the remote" } ] },
+      { "name": "grep", "description": "Search tracked files" },
+      { "name": "init", "description": "Create an empty repository" },
+      { "name": "log", "description": "Show commit history", "args": "branch",
+        "options": [ { "name": "--graph", "description": "Draw the branch graph" }, { "name": "--oneline", "description": "One line per commit" } ] },
+      { "name": "merge", "description": "Join histories together", "args": "branch",
+        "options": [ { "name": "--abort", "description": "Stop a merge in progress" }, { "name": "--no-ff", "description": "Always create a merge commit" } ] },
+      { "name": "mv", "description": "Move or rename a file", "args": "path" },
+      { "name": "pull", "description": "Fetch and integrate", "args": "remote",
+        "options": [ { "name": "--rebase", "description": "Rebase instead of merging" } ] },
+      { "name": "push", "description": "Update remote refs", "args": "remote",
+        "options": [
+          { "name": "--force-with-lease", "description": "Overwrite only if nobody else pushed" },
+          { "name": "--set-upstream", "description": "Track the pushed branch" },
+          { "name": "--tags", "description": "Push tags too" }
+        ] },
+      { "name": "rebase", "description": "Reapply commits on another base", "args": "branch",
+        "options": [
+          { "name": "--abort", "description": "Stop a rebase in progress" },
+          { "name": "--continue", "description": "Continue after resolving conflicts" },
+          { "name": "--interactive", "description": "Edit the commit list" }
+        ] },
+      { "name": "reflog", "description": "Show where refs have pointed" },
+      { "name": "remote", "description": "Manage remotes",
+        "subcommands": [
+          { "name": "add", "description": "Add a remote" },
+          { "name": "remove", "description": "Remove a remote", "args": "remote" },
+          { "name": "rename", "description": "Rename a remote", "args": "remote" },
+          { "name": "set-url", "description": "Change a remote's URL", "args": "remote" },
+          { "name": "show", "description": "Describe a remote", "args": "remote" }
+        ],
+        "options": [ { "name": "-v", "description": "List remotes with URLs" } ] },
+      { "name": "reset", "description": "Move HEAD and reset state", "args": "branch",
+        "options": [ { "name": "--hard", "description": "Discard all changes" }, { "name": "--soft", "description": "Keep changes staged" } ] },
+      { "name": "restore", "description": "Restore working tree files", "args": "path",
+        "options": [ { "name": "--staged", "description": "Unstage instead" } ] },
+      { "name": "revert", "description": "Undo commits with new commits" },
+      { "name": "rm", "description": "Remove files from the index", "args": "path",
+        "options": [ { "name": "--cached", "description": "Keep the file on disk" } ] },
+      { "name": "show", "description": "Show an object", "args": "branch" },
+      { "name": "stash", "description": "Set changes aside",
+        "subcommands": [
+          { "name": "apply", "description": "Apply a stash and keep it" },
+          { "name": "drop", "description": "Delete a stash" },
+          { "name": "list", "description": "List stashes" },
+          { "name": "pop", "description": "Apply a stash and delete it" },
+          { "name": "push", "description": "Stash changes" },
+          { "name": "show", "description": "Show a stash's changes" }
+        ] },
+      { "name": "status", "description": "Show the working tree status",
+        "options": [ { "name": "--short", "description": "Short format" } ] },
+      { "name": "submodule", "description": "Manage submodules",
+        "subcommands": [ { "name": "add" }, { "name": "init" }, { "name": "status" }, { "name": "update" } ] },
+      { "name": "switch", "description": "Switch branches", "args": "branch",
+        "options": [ { "name": "--create", "description": "Create the branch first" }, { "name": "-c", "description": "Create the branch first" } ] },
+      { "name": "tag", "description": "Create, list or delete tags" },
+      { "name": "worktree", "description": "Manage extra working trees",
+        "subcommands": [ { "name": "add" }, { "name": "list" }, { "name": "prune" }, { "name": "remove" } ] }
+    ]
+  }
+]

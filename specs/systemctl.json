@@ -1,0 +1,32 @@
+[
+  {
+    "name": "systemctl",
+    "subcommands": [
+      { "name": "cat", "description": "Show a unit file" },
+      { "name": "daemon-reload", "description": "Reload unit files" },
+      { "name": "disable", "description": "Stop starting a unit at boot" },
+      { "name": "edit", "description": "Edit a unit" },
+      { "name": "enable", "description": "Start a unit at boot" },
+      { "name": "is-active", "description": "Check whether a unit is running" },
+      { "name": "is-enabled", "description": "Check whether a unit starts at boot" },
+      { "name": "list-unit-files", "description": "List installed unit files" },
+      { "name": "list-units", "description": "List loaded units" },
+      { "name": "mask", "description": "Prevent a unit from starting" },
+      { "name": "reload", "description": "Reload a unit's configuration" },
+      { "name": "restart", "description": "Restart a unit" },
+      { "name": "start", "description": "Start a unit" },
+      { "name": "status", "description": "Show a unit's status" },
+      { "name": "stop", "description": "Stop a unit" },
+      { "name": "unmask", "description": "Allow a masked unit to start" }
+    ]
+  },
+  {
+    "name": "journalctl",
+    "options": [
+      { "name": "--follow", "description": "Keep printing new entries" },
+      { "name": "--since", "description": "Show entries since a time" },
+      { "name": "--unit", "description": "Show entries for one unit" },
+      { "name": "-xe", "description": "Jump to the end with explanations" }
+    ]
+  }
+]
