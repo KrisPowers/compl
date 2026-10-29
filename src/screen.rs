@@ -4,6 +4,8 @@
 //! screen. The prompt marker records where input starts; from then on the
 //! input is whatever sits between that spot and the cursor.
 
+use std::num::NonZeroU16;
+
 use vt100::Screen;
 
 /// Where the shell's input starts, captured when the prompt finished drawing.
@@ -72,6 +74,17 @@ impl Prompt {
     }
 }
 
+/// The screen's size as plain (rows, columns).
+pub fn screen_size(screen: &Screen) -> (u16, u16) {
+    let (rows, cols) = screen.size();
+    (rows.get(), cols.get())
+}
+
+/// A screen dimension for vt100, which needs at least one row and column.
+pub fn nonzero(n: u16) -> NonZeroU16 {
+    NonZeroU16::new(n).unwrap_or(NonZeroU16::MIN)
+}
+
 /// The first row of the logical line `row` belongs to.
 fn line_start(screen: &Screen, row: u16) -> u16 {
     let mut start = row;
@@ -82,12 +95,12 @@ fn line_start(screen: &Screen, row: u16) -> u16 {
 }
 
 fn cell_index(screen: &Screen, start: u16, row: u16, col: u16) -> usize {
-    usize::from(row - start) * usize::from(screen.size().1) + usize::from(col)
+    usize::from(row - start) * usize::from(screen_size(screen).1) + usize::from(col)
 }
 
 /// The text of cells `from..to` of the logical line starting at row `start`.
 fn text(screen: &Screen, start: u16, from: usize, to: usize) -> String {
-    let cols = usize::from(screen.size().1);
+    let cols = usize::from(screen_size(screen).1);
     let mut out = String::new();
     for index in from..to {
         let row = usize::from(start) + index / cols;
@@ -103,7 +116,7 @@ fn text(screen: &Screen, start: u16, from: usize, to: usize) -> String {
 
 /// The first column at or after `col` on `row` holding visible text.
 fn first_filled(screen: &Screen, row: u16, col: u16) -> Option<u16> {
-    (col..screen.size().1).find(|&col| {
+    (col..screen_size(screen).1).find(|&col| {
         screen
             .cell(row, col)
             .is_some_and(|cell| !cell.contents().trim().is_empty())
@@ -115,7 +128,7 @@ mod tests {
     use super::*;
 
     fn screen(bytes: &[u8]) -> vt100::Parser {
-        let mut parser = vt100::Parser::new(10, 20, 0);
+        let mut parser = vt100::Parser::new(nonzero(10), nonzero(20), 0);
         parser.process(bytes);
         parser
     }

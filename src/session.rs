@@ -23,7 +23,7 @@ use unicode_width::UnicodeWidthStr;
 use crate::complete::{self, Completion, Context};
 use crate::markers::{Chunk, Scanner};
 use crate::overlay::{Overlay, View};
-use crate::screen::Prompt;
+use crate::screen::{nonzero, screen_size, Prompt};
 use crate::shell::{self, Shell};
 use crate::terminal::{self, RawMode};
 
@@ -134,7 +134,7 @@ pub fn run(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<()> {
         pty: writer,
         rx,
         backlog: VecDeque::new(),
-        parser: vt100::Parser::new(rows, cols, 0),
+        parser: vt100::Parser::new(nonzero(rows), nonzero(cols), 0),
         scanner: Scanner::default(),
         ctx: Context::new(shell, std::env::current_dir()?),
         prompt: None,
@@ -416,7 +416,7 @@ impl Session {
             selected: self.menu.selected,
             open: self.menu.open,
             token_width: raw.width(),
-            limit: prompt.limit(screen.size().1),
+            limit: prompt.limit(screen_size(screen).1),
         };
         self.overlay.draw(screen, &view, &mut self.out);
     }
@@ -445,7 +445,7 @@ impl Session {
             return Ok(());
         }
         self.size = size;
-        self.parser.screen_mut().set_size(size.0, size.1);
+        self.parser.set_size(nonzero(size.0), nonzero(size.1));
         self.overlay.clear(self.parser.screen(), &mut self.out);
         self.master.resize(pty_size(size.0, size.1))?;
         self.redraw = true;
