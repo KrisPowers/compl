@@ -1,0 +1,110 @@
+name: Release
+
+# Publishing a GitHub release builds every target, attaches the archives and
+# checksums to it, and opens a pull request updating the Homebrew formula.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build, such as v0.1.0
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  CARGO_TERM_COLOR: always
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
+
+jobs:
+  build:
+    name: Build (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: x86_64-unknown-linux-musl, os: ubuntu-latest, cross: true }
+          - { target: aarch64-unknown-linux-musl, os: ubuntu-latest, cross: true }
+          - { target: x86_64-apple-darwin, os: macos-latest }
+          - { target: aarch64-apple-darwin, os: macos-latest }
+          - { target: x86_64-pc-windows-msvc, os: windows-latest }
+          - { target: aarch64-pc-windows-msvc, os: windows-latest }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: taiki-e/install-action@v2
+        if: matrix.cross
+        with:
+          tool: cross
+      - name: Build
+        shell: bash
+        run: |
+          if [ "${{ matrix.cross }}" = "true" ]; then
+            cross build --release --target "${{ matrix.target }}"
+          else
+            cargo build --release --target "${{ matrix.target }}"
+          fi
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp README.md LICENSE "target/${{ matrix.target }}/release/"
+          tar -czf "dist/${{ matrix.target }}.tar.gz" -C "target/${{ matrix.target }}/release" autocomplete README.md LICENSE
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          $release = "target/${{ matrix.target }}/release"
+          Compress-Archive -Path "$release/autocomplete.exe", README.md, LICENSE -DestinationPath "dist/${{ matrix.target }}.zip"
+      - name: Upload
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" dist/* --clobber
+
+  publish:
+    name: Checksums and formula
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Write checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p dist
+          gh release download "$TAG" --dir dist --pattern '*.tar.gz' --pattern '*.zip'
+          (cd dist && sha256sum ./*.tar.gz ./*.zip | sed 's| \./| |' > checksums.txt)
+          gh release upload "$TAG" dist/checksums.txt --clobber
+      - name: Open formula pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p Formula
+          bash scripts/formula.sh "${TAG#v}" dist/checksums.txt > Formula/autocomplete.rb
+          if git diff --quiet -- Formula/autocomplete.rb && git ls-files --error-unmatch Formula/autocomplete.rb >/dev/null 2>&1; then
+            echo "Formula already up to date"
+            exit 0
+          fi
+          branch="chore/formula-$TAG"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add Formula/autocomplete.rb
+          git commit -m "chore(brew): update formula to $TAG"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "chore(brew): update formula to $TAG" \
+            --body "Points the Homebrew formula at the $TAG release archives and their checksums."
