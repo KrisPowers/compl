@@ -2,8 +2,6 @@
 
 Inline, as-you-type suggestions for commands and paths, in every terminal and shell.
 
-[![CI](https://github.com/KrisPowers/autocomplete/actions/workflows/ci.yml/badge.svg)](https://github.com/KrisPowers/autocomplete/actions/workflows/ci.yml)
-
 Type `cd` and a space, and the first matching directory appears after your cursor, dimmed. Press Tab to open the full list and move through it, keep typing to narrow it, and press Enter to put your pick on the command line. Nothing runs until you press Enter again.
 
 ```text
@@ -45,13 +43,6 @@ This installs `autocomplete.exe` into `%LOCALAPPDATA%\Programs\autocomplete`, ad
 ```bash
 brew tap KrisPowers/autocomplete https://github.com/KrisPowers/autocomplete
 brew install autocomplete
-autocomplete setup
-```
-
-### From source
-
-```bash
-cargo install --git https://github.com/KrisPowers/autocomplete
 autocomplete setup
 ```
 
