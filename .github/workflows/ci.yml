@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install shells
-        run: sudo apt-get update && sudo apt-get install -y zsh fish
+        run: sudo apt-get update && sudo apt-get install -y zsh fish shellcheck
       - name: Check syntax
         run: |
           bash -n shell/bash.sh
@@ -54,10 +54,11 @@ jobs:
           for f in shell/zsh/*.zsh shell/init/posix.sh; do zsh -n "$f"; done
           fish --no-execute shell/fish.fish
           fish --no-execute shell/init/fish.fish
+          shellcheck scripts/install.sh scripts/formula.sh
       - name: Check PowerShell syntax
         shell: pwsh
         run: |
-          foreach ($file in 'shell/pwsh.ps1', 'shell/init/pwsh.ps1') {
+          foreach ($file in 'shell/pwsh.ps1', 'shell/init/pwsh.ps1', 'scripts/install.ps1', 'scripts/build.ps1') {
             $errors = $null
             [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file), [ref]$null, [ref]$errors) | Out-Null
             if ($errors) { $errors | ForEach-Object { Write-Error "${file}: $_" }; exit 1 }
