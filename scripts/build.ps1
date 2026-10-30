@@ -21,10 +21,11 @@ try {
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
     $installed = Join-Path $dir $name
     # Windows cannot overwrite a running program, but it can rename one, so
-    # open sessions keep running the old copy while new ones get this build.
+    # open sessions keep running their copy while new ones get this build.
+    # Old copies still in use are left for a later build to remove.
     if ($windows -and (Test-Path $installed)) {
-        Remove-Item "$installed.old" -Force -ErrorAction SilentlyContinue
-        Rename-Item $installed "$name.old" -Force -ErrorAction Stop
+        Get-ChildItem $dir -Filter "$name*.old" | Remove-Item -Force -ErrorAction SilentlyContinue
+        Rename-Item $installed "$name.$(Get-Date -Format yyyyMMddHHmmss).old" -ErrorAction Stop
     }
     Copy-Item $built $installed -Force -ErrorAction Stop
     Write-Host "Installed $installed"
