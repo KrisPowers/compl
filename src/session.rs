@@ -37,6 +37,11 @@ const ECHO_WAIT: Duration = Duration::from_millis(50);
 const CURSOR_WAIT: Duration = Duration::from_secs(1);
 /// How often to check for a resized terminal when nothing else happens.
 const TICK: Duration = Duration::from_millis(50);
+/// How long the output must stay quiet after the input marker before the
+/// cursor is taken as the start of input. ConPTY can pass the marker on
+/// before it draws the prompt text, so the cursor is only right once the
+/// prompt has finished drawing.
+const PROMPT_SETTLE: Duration = Duration::from_millis(30);
 
 enum Event {
     Input(Vec<u8>),
@@ -153,6 +158,7 @@ pub fn run(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<()> {
         overlay: Overlay::default(),
         size: (rows, cols),
         cursor_query: Some(Instant::now()),
+        capture_at: None,
         stale: false,
         redraw: false,
         out: Vec::new(),
@@ -216,6 +222,8 @@ struct Session {
     size: (u16, u16),
     /// When the cursor position was asked for, until the answer arrives.
     cursor_query: Option<Instant>,
+    /// When to record where input starts, once the prompt has drawn.
+    capture_at: Option<Instant>,
     /// Input went to the shell and its echo has not come back yet.
     stale: bool,
     redraw: bool,
@@ -227,9 +235,13 @@ struct Session {
 impl Session {
     fn run(mut self) -> Result<()> {
         loop {
+            let wait = match self.capture_at {
+                Some(at) => at.saturating_duration_since(Instant::now()).min(TICK),
+                None => TICK,
+            };
             let event = match self.backlog.pop_front() {
                 Some(event) => Ok(event),
-                None => self.rx.recv_timeout(TICK),
+                None => self.rx.recv_timeout(wait),
             };
             match event {
                 Ok(Event::Output(bytes)) => self.output(&bytes),
@@ -245,6 +257,9 @@ impl Session {
             }
             if self.backlog.is_empty() {
                 self.check_size()?;
+                if self.capture_at.is_some_and(|at| at <= Instant::now()) {
+                    self.capture();
+                }
                 if self.redraw {
                     self.draw();
                 }
@@ -273,18 +288,21 @@ impl Session {
                 Chunk::Output(data) => {
                     self.parser.process(&data);
                     self.out.extend_from_slice(&data);
+                    if self.capture_at.is_some() {
+                        self.capture_at = Some(Instant::now() + PROMPT_SETTLE);
+                    }
                 }
                 Chunk::Prompt(cwd) => {
                     self.log.line(format_args!("prompt in {cwd}"));
                     self.ctx.cwd = PathBuf::from(cwd);
                     self.prompt = None;
+                    self.capture_at = None;
                     self.menu = Menu::default();
                 }
                 Chunk::Path(path) => self.ctx.set_path(&path),
                 Chunk::Input => {
-                    let (row, col) = self.parser.screen().cursor_position();
-                    self.log.line(format_args!("input starts at row {row}, column {col}"));
-                    self.prompt = Some(Prompt::capture(self.parser.screen()));
+                    self.prompt = None;
+                    self.capture_at = Some(Instant::now() + PROMPT_SETTLE);
                 }
             }
         }
@@ -303,6 +321,11 @@ impl Session {
         }
         if bytes.is_empty() {
             return Ok(());
+        }
+        // A key pressed while the prompt settles means the prompt is on
+        // screen: the user is looking at it.
+        if self.capture_at.is_some() {
+            self.capture();
         }
         let key = Key::parse(&bytes);
         if key.is_some() {
@@ -344,6 +367,16 @@ impl Session {
         }
         self.redraw = true;
         Ok(())
+    }
+
+    /// Records the cursor as the start of input.
+    fn capture(&mut self) {
+        self.capture_at = None;
+        let screen = self.parser.screen();
+        let (row, col) = screen.cursor_position();
+        self.log.line(format_args!("input starts at row {row}, column {col}"));
+        self.prompt = Some(Prompt::capture(screen));
+        self.redraw = true;
     }
 
     /// Moves the highlight one row down or up, wrapping around.
