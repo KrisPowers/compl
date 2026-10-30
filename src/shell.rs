@@ -1,4 +1,4 @@
-//! The shells autocomplete runs, how each one is started with the prompt
+//! The shells compl runs, how each one is started with the prompt
 //! markers installed, and how each one's startup file is set up.
 
 use std::env;
@@ -22,10 +22,10 @@ const INIT_POSIX: &str = include_str!("../shell/init/posix.sh");
 const INIT_FISH: &str = include_str!("../shell/init/fish.fish");
 const INIT_PWSH: &str = include_str!("../shell/init/pwsh.ps1");
 
-const SETUP_START: &str = "# autocomplete start";
-const SETUP_END: &str = "# autocomplete end";
-const CMD_HAS_NO_STARTUP_FILE: &str = "cmd has no startup file to add autocomplete to; \
-     point your terminal profile at `autocomplete run --shell cmd` instead";
+const SETUP_START: &str = "# compl start";
+const SETUP_END: &str = "# compl end";
+const CMD_HAS_NO_STARTUP_FILE: &str = "cmd has no startup file to add compl to; \
+     point your terminal profile at `compl run --shell cmd` instead";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
 pub enum Shell {
@@ -110,13 +110,13 @@ fn on_path(program: &str) -> bool {
         .is_some_and(|path| env::split_paths(&path).any(|dir| dir.join(&file).is_file()))
 }
 
-/// The command that starts `shell` with autocomplete's prompt markers loaded
+/// The command that starts `shell` with compl's prompt markers loaded
 /// after the user's own startup files.
 pub fn command(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<CommandBuilder> {
     let program = exe.map_or_else(|| OsString::from(shell.name()), PathBuf::into_os_string);
     let mut cmd = CommandBuilder::new(program);
     cmd.cwd(env::current_dir()?);
-    cmd.env("AUTOCOMPLETE_SESSION", "1");
+    cmd.env("COMPL_SESSION", "1");
     match shell {
         Shell::Bash => {
             let dir = integration(shell, &[("bashrc", BASH)])?;
@@ -124,16 +124,16 @@ pub fn command(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<Comman
             cmd.arg(dir.join("bashrc"));
             cmd.arg("-i");
             if login {
-                cmd.env("AUTOCOMPLETE_LOGIN", "1");
+                cmd.env("COMPL_LOGIN", "1");
             }
         }
         Shell::Zsh => {
             let files = [(".zshenv", ZSHENV), (".zprofile", ZPROFILE), (".zshrc", ZSHRC)];
             let dir = integration(shell, &files)?;
             if let Some(user) = env::var_os("ZDOTDIR") {
-                cmd.env("AUTOCOMPLETE_ZDOTDIR", user);
+                cmd.env("COMPL_ZDOTDIR", user);
             }
-            cmd.env("AUTOCOMPLETE_INTEGRATION", &dir);
+            cmd.env("COMPL_INTEGRATION", &dir);
             cmd.env("ZDOTDIR", &dir);
             cmd.arg("-i");
             if login {
@@ -165,7 +165,7 @@ pub fn command(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<Comman
     Ok(cmd)
 }
 
-/// Writes a shell's integration files into autocomplete's cache directory and
+/// Writes a shell's integration files into compl's cache directory and
 /// returns that directory. Files are replaced atomically so shells starting at
 /// the same moment never read half a file.
 fn integration(shell: Shell, files: &[(&str, &str)]) -> Result<PathBuf> {
@@ -191,7 +191,7 @@ pub fn cache_dir() -> PathBuf {
             .map(PathBuf::from)
             .or_else(|| home().map(|home| home.join(".cache")))
     };
-    base.unwrap_or_else(env::temp_dir).join("autocomplete")
+    base.unwrap_or_else(env::temp_dir).join("compl")
 }
 
 /// PowerShell's `-EncodedCommand` takes base64 of UTF-16LE. Passing the
@@ -228,7 +228,7 @@ fn pwsh_quote(text: &str) -> String {
     format!("'{}'", text.replace('\'', "''"))
 }
 
-/// The snippet a startup file evaluates: it starts `autocomplete run` for
+/// The snippet a startup file evaluates: it starts `compl run` for
 /// interactive terminals, and returns to the outer shell if that fails.
 pub fn init(shell: Shell) -> Result<String> {
     let exe = env::current_exe()?.display().to_string();
@@ -253,7 +253,7 @@ pub fn setup(shell: Shell, remove: bool) -> Result<()> {
     let block = block_range(&text);
     if remove {
         let Some(range) = block else {
-            println!("autocomplete is not set up in {}", file.display());
+            println!("compl is not set up in {}", file.display());
             return Ok(());
         };
         let mut kept = text;
@@ -263,11 +263,11 @@ pub fn setup(shell: Shell, remove: bool) -> Result<()> {
         } else {
             fs::write(&file, kept)?;
         }
-        println!("Removed autocomplete from {}", file.display());
+        println!("Removed compl from {}", file.display());
         return Ok(());
     }
     if block.is_some() {
-        println!("autocomplete is already set up in {}", file.display());
+        println!("compl is already set up in {}", file.display());
         return Ok(());
     }
     if let Some(parent) = file.parent() {
@@ -282,7 +282,7 @@ pub fn setup(shell: Shell, remove: bool) -> Result<()> {
     }
     out.push_str(&format!("{SETUP_START}\n{}\n{SETUP_END}\n", init_line(shell)?));
     fs::write(&file, out).with_context(|| format!("writing {}", file.display()))?;
-    println!("Added autocomplete to {}. Open a new terminal to start using it.", file.display());
+    println!("Added compl to {}. Open a new terminal to start using it.", file.display());
     Ok(())
 }
 
@@ -294,10 +294,10 @@ fn block_range(text: &str) -> Option<std::ops::Range<usize>> {
     Some(start..end)
 }
 
-/// The startup-file line. It calls `autocomplete` by name when it is on PATH
+/// The startup-file line. It calls `compl` by name when it is on PATH
 /// (so upgrades keep working) and by full path otherwise.
 fn init_line(shell: Shell) -> Result<String> {
-    let exe = if on_path("autocomplete") {
+    let exe = if on_path("compl") {
         None
     } else {
         Some(env::current_exe()?.display().to_string())
@@ -305,22 +305,22 @@ fn init_line(shell: Shell) -> Result<String> {
     let name = shell.name();
     Ok(match (shell, exe) {
         (Shell::Bash | Shell::Zsh, None) => format!(
-            "command -v autocomplete >/dev/null 2>&1 && eval \"$(autocomplete init {name})\""
+            "command -v compl >/dev/null 2>&1 && eval \"$(compl init {name})\""
         ),
         (Shell::Bash | Shell::Zsh, Some(exe)) => {
             let exe = posix_quote(&exe);
             format!("[ -x {exe} ] && eval \"$({exe} init {name})\"")
         }
         (Shell::Fish, None) => {
-            "if type -q autocomplete\n    autocomplete init fish | source\nend".to_string()
+            "if type -q compl\n    compl init fish | source\nend".to_string()
         }
         (Shell::Fish, Some(exe)) => {
             let exe = fish_quote(&exe);
             format!("if test -x {exe}\n    {exe} init fish | source\nend")
         }
         (Shell::Pwsh | Shell::Powershell, None) => format!(
-            "if (Get-Command autocomplete -ErrorAction SilentlyContinue) \
-             {{ Invoke-Expression (& autocomplete init {name} | Out-String) }}"
+            "if (Get-Command compl -ErrorAction SilentlyContinue) \
+             {{ Invoke-Expression (& compl init {name} | Out-String) }}"
         ),
         (Shell::Pwsh | Shell::Powershell, Some(exe)) => {
             let exe = pwsh_quote(&exe);
@@ -346,7 +346,7 @@ fn startup_file(shell: Shell) -> Result<PathBuf> {
                 Some(dir) => PathBuf::from(dir),
                 None => home_dir()?.join(".config"),
             };
-            config.join("fish").join("conf.d").join("autocomplete.fish")
+            config.join("fish").join("conf.d").join("compl.fish")
         }
         Shell::Pwsh | Shell::Powershell => profile(shell)?,
         Shell::Cmd => bail!(CMD_HAS_NO_STARTUP_FILE),

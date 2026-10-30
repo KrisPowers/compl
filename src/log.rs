@@ -1,5 +1,5 @@
 //! A short log of the current session, kept in the cache directory as
-//! `session.log` so a bug report can include what autocomplete saw.
+//! `session.log` so a bug report can include what compl saw.
 
 use std::fmt::Arguments;
 use std::fs::{self, File};

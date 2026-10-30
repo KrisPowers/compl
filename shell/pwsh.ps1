@@ -1,15 +1,15 @@
-# autocomplete runs this after your PowerShell profile. It adds the prompt
-# markers autocomplete reads.
+# compl runs this after your PowerShell profile. It adds the prompt
+# markers compl reads.
 
 # PSReadLine's own predictions draw where ours go.
 if (Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue) {
     try { Set-PSReadLineOption -PredictionSource None } catch { }
 }
 
-$global:__AutocompleteUserPrompt = $function:prompt
+$global:__ComplUserPrompt = $function:prompt
 
 function global:prompt {
-    $text = (& $global:__AutocompleteUserPrompt) -join ''
+    $text = (& $global:__ComplUserPrompt) -join ''
     $e = [char]27
     $b = [char]7
     $cwd = $executionContext.SessionState.Path.CurrentLocation.ProviderPath

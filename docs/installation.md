@@ -8,25 +8,25 @@ Both installers read these environment variables:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `AUTOCOMPLETE_VERSION` | `latest` | Install a specific release tag, such as `v0.1.0` |
-| `AUTOCOMPLETE_INSTALL_DIR` | `~/.local/bin`, or `%LOCALAPPDATA%\Programs\autocomplete` on Windows | Where the binary goes |
-| `AUTOCOMPLETE_NO_SETUP` | unset | Set it to skip `autocomplete setup` |
+| `COMPL_VERSION` | `latest` | Install a specific release tag, such as `v0.1.0` |
+| `COMPL_INSTALL_DIR` | `~/.local/bin`, or `%LOCALAPPDATA%\Programs\compl` on Windows | Where the binary goes |
+| `COMPL_NO_SETUP` | unset | Set it to skip `compl setup` |
 
 For example:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KrisPowers/autocomplete/main/scripts/install.sh | AUTOCOMPLETE_VERSION=v0.1.0 sh
+curl -fsSL https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.sh | COMPL_VERSION=v0.1.0 sh
 ```
 
 ```powershell
-$env:AUTOCOMPLETE_NO_SETUP = 1; irm https://raw.githubusercontent.com/KrisPowers/autocomplete/main/scripts/install.ps1 | iex
+$env:COMPL_NO_SETUP = 1; irm https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.ps1 | iex
 ```
 
 Both installers check the download against the release's `checksums.txt` before installing it.
 
 ## Release archives
 
-Each [release](https://github.com/KrisPowers/autocomplete/releases) has one archive per platform, named after its Rust target:
+Each [release](https://github.com/KrisPowers/compl/releases) has one archive per platform, named after its Rust target:
 
 | Platform | Archive |
 | --- | --- |
@@ -37,14 +37,14 @@ Each [release](https://github.com/KrisPowers/autocomplete/releases) has one arch
 | Windows, x64 | `x86_64-pc-windows-msvc.zip` |
 | Windows, ARM64 | `aarch64-pc-windows-msvc.zip` |
 
-The Linux builds are static, so they run on any distribution. To install by hand, extract the binary somewhere on your PATH and run `autocomplete setup`.
+The Linux builds are static, so they run on any distribution. To install by hand, extract the binary somewhere on your PATH and run `compl setup`.
 
 ## Turning it on for more shells
 
-`autocomplete setup` picks your current shell. Name another one to set it up too:
+`compl setup` picks your current shell. Name another one to set it up too:
 
 ```bash
-autocomplete setup fish
+compl setup fish
 ```
 
 ## Uninstalling
@@ -52,8 +52,8 @@ autocomplete setup fish
 Remove the startup line, then the binary:
 
 ```bash
-autocomplete setup --remove
-rm ~/.local/bin/autocomplete
+compl setup --remove
+rm ~/.local/bin/compl
 ```
 
-With Homebrew, run `autocomplete setup --remove` and then `brew uninstall autocomplete`. On Windows, run `autocomplete setup powershell --remove` (or `pwsh`) and delete `%LOCALAPPDATA%\Programs\autocomplete`.
+With Homebrew, run `compl setup --remove` and then `brew uninstall compl`. On Windows, run `compl setup powershell --remove` (or `pwsh`) and delete `%LOCALAPPDATA%\Programs\compl`.

@@ -1,4 +1,4 @@
-//! Raw mode and size for the real terminal autocomplete runs in.
+//! Raw mode and size for the real terminal compl runs in.
 
 use anyhow::Result;
 
@@ -80,7 +80,7 @@ mod console {
             if GetConsoleMode(input, &mut input_mode) == 0
                 || GetConsoleMode(output, &mut output_mode) == 0
             {
-                bail!("autocomplete has to run in a console");
+                bail!("compl has to run in a console");
             }
             let saved = Saved {
                 input: input_mode,

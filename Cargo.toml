@@ -1,10 +1,10 @@
 [package]
-name = "autocomplete"
+name = "compl"
 version = "0.1.0"
 edition = "2021"
 description = "Inline, as-you-type suggestions for commands and paths in every terminal and shell."
 license = "MIT"
-repository = "https://github.com/KrisPowers/autocomplete"
+repository = "https://github.com/KrisPowers/compl"
 readme = "README.md"
 keywords = ["terminal", "autocomplete", "shell", "completion", "cli"]
 categories = ["command-line-utilities"]

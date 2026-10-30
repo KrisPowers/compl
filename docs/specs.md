@@ -1,6 +1,6 @@
 # Writing specs
 
-A spec tells autocomplete what can follow a command: its subcommands, its options and what kind of argument it takes. Specs are JSON files in [`specs/`](../specs), compiled into the binary.
+A spec tells compl what can follow a command: its subcommands, its options and what kind of argument it takes. Specs are JSON files in [`specs/`](../specs), compiled into the binary.
 
 ## Format
 

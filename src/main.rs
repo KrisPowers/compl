@@ -1,6 +1,6 @@
 //! Inline, as-you-type suggestions for commands and paths.
 //!
-//! `autocomplete run` starts your shell inside a pseudo terminal, passes every
+//! `compl run` starts your shell inside a pseudo terminal, passes every
 //! byte through, and draws suggestions over the prompt while you type.
 
 mod complete;
@@ -41,13 +41,13 @@ enum Command {
         #[arg(long)]
         login: bool,
     },
-    /// Print the snippet a shell's startup file evaluates to start autocomplete.
+    /// Print the snippet a shell's startup file evaluates to start compl.
     Init { shell: Shell },
-    /// Add autocomplete to a shell's startup file, or take it out again.
+    /// Add compl to a shell's startup file, or take it out again.
     Setup {
         /// The shell to set up. Detected when left out.
         shell: Option<Shell>,
-        /// Remove autocomplete from the startup file instead.
+        /// Remove compl from the startup file instead.
         #[arg(long)]
         remove: bool,
     },
@@ -68,7 +68,7 @@ fn main() -> ExitCode {
     match dispatch(Cli::parse()) {
         Ok(()) => ExitCode::SUCCESS,
         Err(err) => {
-            eprintln!("autocomplete: {err:#}");
+            eprintln!("compl: {err:#}");
             ExitCode::FAILURE
         }
     }

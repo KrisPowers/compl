@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Prints the Homebrew formula for a release.
-#   bash scripts/formula.sh 0.1.0 dist/checksums.txt > Formula/autocomplete.rb
+#   bash scripts/formula.sh 0.1.0 dist/checksums.txt > Formula/compl.rb
 set -euo pipefail
 
 version="$1"
 checksums="$2"
-base="https://github.com/KrisPowers/autocomplete/releases/download/v$version"
+base="https://github.com/KrisPowers/compl/releases/download/v$version"
 
 sha() {
     awk -v file="$1.tar.gz" '$2 == file { print $1 }' "$checksums"
@@ -19,9 +19,9 @@ for target in aarch64-apple-darwin x86_64-apple-darwin aarch64-unknown-linux-mus
 done
 
 cat <<EOF
-class Autocomplete < Formula
+class Compl < Formula
   desc "Inline, as-you-type suggestions for commands and paths in any terminal"
-  homepage "https://github.com/KrisPowers/autocomplete"
+  homepage "https://github.com/KrisPowers/compl"
   version "$version"
   license "MIT"
 
@@ -48,18 +48,18 @@ class Autocomplete < Formula
   end
 
   def install
-    bin.install "autocomplete"
+    bin.install "compl"
   end
 
   def caveats
     <<~TEXT
       Turn suggestions on for your shell, then open a new terminal:
-        autocomplete setup
+        compl setup
     TEXT
   end
 
   test do
-    assert_match version.to_s, shell_output("#{bin}/autocomplete --version")
+    assert_match version.to_s, shell_output("#{bin}/compl --version")
   end
 end
 EOF

@@ -1,4 +1,4 @@
-# autocomplete
+# compl
 
 Inline, as-you-type suggestions for commands and paths, in every terminal and shell.
 
@@ -24,27 +24,27 @@ It works the same way for command names, subcommands and options (`git che` sugg
 ### macOS and Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KrisPowers/autocomplete/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.sh | sh
 ```
 
-This installs the binary into `~/.local/bin` and adds autocomplete to your shell's startup file.
+This installs the binary into `~/.local/bin` and adds compl to your shell's startup file.
 
 ### Windows
 
 In PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/KrisPowers/autocomplete/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.ps1 | iex
 ```
 
-This installs `autocomplete.exe` into `%LOCALAPPDATA%\Programs\autocomplete`, adds it to your PATH and adds autocomplete to your PowerShell profile.
+This installs `compl.exe` into `%LOCALAPPDATA%\Programs\compl`, adds it to your PATH and adds compl to your PowerShell profile.
 
 ### Homebrew
 
 ```bash
-brew tap KrisPowers/autocomplete https://github.com/KrisPowers/autocomplete
-brew install autocomplete
-autocomplete setup
+brew tap KrisPowers/compl https://github.com/KrisPowers/compl
+brew install compl
+compl setup
 ```
 
 Open a new terminal once installed. The installers accept a few environment variables, such as a pinned version; see [installation options](docs/installation.md).
@@ -61,12 +61,12 @@ Start typing. When suggestions exist, a list shows under the cursor:
 | Enter | Run the command line as it stands |
 | Esc | Put back what you typed and hide the list until you type again |
 
-When no list is showing, every key behaves exactly as it does without autocomplete, so Tab still reaches your shell's own completion and Up and Down still go through history.
+When no list is showing, every key behaves exactly as it does without compl, so Tab still reaches your shell's own completion and Up and Down still go through history.
 
-To try autocomplete without changing any startup file, run it directly:
+To try compl without changing any startup file, run it directly:
 
 ```bash
-autocomplete run --shell zsh
+compl run --shell zsh
 ```
 
 Exit the shell as usual (`exit` or Ctrl+D) to leave it.
@@ -75,18 +75,18 @@ Exit the shell as usual (`exit` or Ctrl+D) to leave it.
 
 | Command | What it does |
 | --- | --- |
-| `autocomplete` | Start your shell with suggestions turned on |
-| `autocomplete run --shell <shell>` | Start a specific shell: `bash`, `zsh`, `fish`, `pwsh`, `powershell` or `cmd` |
-| `autocomplete setup [shell]` | Add autocomplete to the shell's startup file |
-| `autocomplete setup [shell] --remove` | Take it out again |
-| `autocomplete init <shell>` | Print the snippet the startup file evaluates |
-| `autocomplete complete "<line>"` | Print the suggestions for a command line |
+| `compl` | Start your shell with suggestions turned on |
+| `compl run --shell <shell>` | Start a specific shell: `bash`, `zsh`, `fish`, `pwsh`, `powershell` or `cmd` |
+| `compl setup [shell]` | Add compl to the shell's startup file |
+| `compl setup [shell] --remove` | Take it out again |
+| `compl init <shell>` | Print the snippet the startup file evaluates |
+| `compl complete "<line>"` | Print the suggestions for a command line |
 
 ## Configuration
 
 | Variable | Effect |
 | --- | --- |
-| `AUTOCOMPLETE_DISABLE=1` | Start shells without autocomplete, even with the startup line in place |
+| `COMPL_DISABLE=1` | Start shells without compl, even with the startup line in place |
 
 Suggestions for a command come from a small JSON spec. Adding or improving one is the easiest way to contribute; see [writing specs](docs/specs.md).
 
