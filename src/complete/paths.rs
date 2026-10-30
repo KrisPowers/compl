@@ -38,9 +38,13 @@ pub fn list(token: &Token, ctx: &Context, dirs_only: bool) -> Vec<Item> {
         if dirs_only && !is_dir {
             continue;
         }
-        let label = if is_dir { format!("{name}{sep}") } else { name };
-        let value = format!("{dir}{label}");
-        items.push(Item::new(label, &value, None, is_dir, token, quoting));
+        // The list shows the bare name; a directory still goes onto the line
+        // with its separator, so the next level can follow.
+        let mut value = format!("{dir}{name}");
+        if is_dir {
+            value.push(sep);
+        }
+        items.push(Item::new(name, &value, None, is_dir, token, quoting));
     }
     items
 }

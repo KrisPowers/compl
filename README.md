@@ -7,9 +7,9 @@ Type `cd` and a space, and a list of directories appears under your cursor; type
 ```text
 ~/code $ cd Documents/
             Do
-            Documents/
-            Downloads/
-            Dotfiles/
+            Documents
+            Downloads
+            Dotfiles
 ```
 
 It works the same way for command names, subcommands and options (`git che` suggests `checkout`), branches, remotes, package.json scripts, Makefile targets and files.
