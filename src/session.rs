@@ -7,7 +7,7 @@
 //! - Tab / Shift+Tab: move down or up the list. The highlighted suggestion
 //!   is put on the command line as you go; the first row puts back what you
 //!   typed.
-//! - Up / Down: move through the list once you have tabbed into it.
+//! - Up / Down: move up or down the list, the same as Shift+Tab and Tab.
 //! - Enter: runs the command line as it stands, as usual.
 //! - Esc: put back what you typed and hide the list until you type again.
 
@@ -340,7 +340,7 @@ impl Session {
                 self.step(key == Some(Key::Tab))?;
                 true
             }
-            Some(Key::Up | Key::Down) if self.menu.visible() && self.menu.selected > 0 => {
+            Some(Key::Up | Key::Down) if self.menu.visible() => {
                 self.step(key == Some(Key::Down))?;
                 true
             }

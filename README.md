@@ -57,11 +57,11 @@ Start typing. When suggestions exist, a list shows under the cursor:
 | --- | --- |
 | Tab | Move down the list and put that suggestion on the command line |
 | Shift+Tab | Move up the list; the first row puts back what you typed |
-| Up, Down | Move through the list once you have tabbed into it |
+| Up, Down | Move up or down the list, the same as Shift+Tab and Tab |
 | Enter | Run the command line as it stands |
 | Esc | Put back what you typed and hide the list until you type again |
 
-When no list is showing, every key behaves exactly as it does without autocomplete, so Tab still reaches your shell's own completion.
+When no list is showing, every key behaves exactly as it does without autocomplete, so Tab still reaches your shell's own completion and Up and Down still go through history.
 
 To try autocomplete without changing any startup file, run it directly:
 
