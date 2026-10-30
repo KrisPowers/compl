@@ -24,7 +24,7 @@ It works the same way for command names, subcommands and options (`git che` sugg
 ### macOS and Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.sh | sh
+curl -fsSL https://compl.krispowers.dev | sh
 ```
 
 This installs the binary into `~/.local/bin` and adds compl to your shell's startup file.
@@ -34,7 +34,7 @@ This installs the binary into `~/.local/bin` and adds compl to your shell's star
 In PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.ps1 | iex
+irm https://compl.krispowers.dev | iex
 ```
 
 This installs `compl.exe` into `%LOCALAPPDATA%\Programs\compl`, adds it to your PATH and adds compl to your PowerShell profile.
@@ -42,7 +42,7 @@ This installs `compl.exe` into `%LOCALAPPDATA%\Programs\compl`, adds it to your 
 ### Homebrew
 
 ```bash
-brew tap KrisPowers/compl https://github.com/KrisPowers/compl
+brew tap krispowers/compl https://compl.krispowers.dev/brew
 brew install compl
 compl setup
 ```

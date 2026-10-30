@@ -5,7 +5,7 @@ set -euo pipefail
 
 version="$1"
 checksums="$2"
-base="https://github.com/KrisPowers/compl/releases/download/v$version"
+base="https://compl.krispowers.dev/download/v$version"
 
 sha() {
     awk -v file="$1.tar.gz" '$2 == file { print $1 }' "$checksums"
