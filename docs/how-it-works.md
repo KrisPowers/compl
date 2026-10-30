@@ -32,7 +32,8 @@ The command line is split into words using the shell's own quoting rules (POSIX 
 
 - The first word of a command, after `sudo`, `env`, variable assignments and the like, is completed from the programs on PATH and the shell's built-in commands.
 - Later words are completed from the command's [spec](specs.md): its subcommands, its options, and its arguments, which can be paths, directories, git branches, git remotes, package.json scripts or Makefile targets.
-- Commands without a spec get file and directory names.
+- Paths are only suggested where a command's spec says it takes them, so a word that is not a known command gets nothing.
+- A suggestion that is exactly what you already typed is left out.
 
 Matching ignores case. Suggestions are sorted alphabetically, ignoring case, with digits and symbols ahead of letters, and a word sorts ahead of longer words that start with it. Each suggestion is quoted for your shell before it is typed in, so a directory called `My Music` becomes `My\ Music/` in bash and `'My Music\` in PowerShell.
 

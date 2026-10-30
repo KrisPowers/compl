@@ -1,6 +1,6 @@
 //! Works out the suggestions for a command line: command names in command
-//! position, then subcommands, options and arguments from the built-in specs,
-//! falling back to paths.
+//! position, then subcommands, options and arguments from the built-in specs.
+//! Paths are only suggested where a spec says a command takes them.
 
 mod commands;
 mod git;
@@ -125,6 +125,8 @@ pub fn complete(line: &str, ctx: &mut Context) -> Completion {
         None => command_names(&token, ctx),
         Some((name, rest)) => arguments(name, rest, &token, ctx),
     };
+    // What is already typed is not a suggestion.
+    items.retain(|item| !item.text.eq_ignore_ascii_case(&token.raw));
     items.sort_by(|a, b| compare(&a.label, &b.label));
     items.dedup_by(|a, b| a.text == b.text);
     items.truncate(MAX_ITEMS);
@@ -168,7 +170,7 @@ fn command_names(token: &Token, ctx: &mut Context) -> Vec<Item> {
 fn arguments(name: &str, rest: &[String], token: &Token, ctx: &mut Context) -> Vec<Item> {
     let quoting = ctx.shell.quoting();
     let Some(spec) = specs::find(name) else {
-        return paths::list(token, ctx, false);
+        return Vec::new();
     };
     let mut node = spec;
     let mut positional = 0;
@@ -303,11 +305,11 @@ mod tests {
     }
 
     #[test]
-    fn unknown_commands_get_paths() {
+    fn paths_only_where_a_spec_takes_them() {
         let dir = sandbox("files");
         let mut ctx = Context::new(Shell::Zsh, dir.clone());
-        assert_eq!(texts("frobnicate ", &mut ctx).len(), 5);
-        assert_eq!(texts("frobnicate no", &mut ctx), ["notes.txt"]);
+        assert!(texts("frobnicate ", &mut ctx).is_empty());
+        assert!(texts("frobnicate no", &mut ctx).is_empty());
         assert_eq!(texts("cat src/m", &mut ctx), ["src/main.rs"]);
         fs::remove_dir_all(dir).unwrap();
     }
@@ -336,6 +338,13 @@ mod tests {
         let mut ctx = Context::new(Shell::Bash, std::env::temp_dir());
         assert!(complete("", &mut ctx).items.is_empty());
         assert!(complete("ls | ", &mut ctx).items.is_empty());
+    }
+
+    #[test]
+    fn leaves_out_what_is_already_typed() {
+        let mut ctx = Context::new(Shell::Bash, std::env::temp_dir());
+        assert!(texts("echo", &mut ctx).is_empty());
+        assert!(!texts("git status", &mut ctx).contains(&"status".to_string()));
     }
 
     #[test]
