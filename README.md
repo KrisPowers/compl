@@ -2,14 +2,14 @@
 
 Inline, as-you-type suggestions for commands and paths, in every terminal and shell.
 
-Type `cd` and a list of directories appears under your cursor. Its first row is what you typed. Press Tab to move down the list; each directory you land on goes onto the command line. Keep typing to narrow the list, and press Enter to run the line as it stands.
+Type `cd` and a space, and a list of directories appears under your cursor; type `Do` and it narrows to the ones starting with it. Its first row is what you typed. Press Tab to move down the list; each directory you land on goes onto the command line. Keep typing to narrow the list, and press Enter to run the line as it stands.
 
 ```text
 ~/code $ cd Documents/
-         cd
-         Documents/
-         Downloads/
-         Dotfiles/
+            Do
+            Documents/
+            Downloads/
+            Dotfiles/
 ```
 
 It works the same way for command names, subcommands and options (`git che` suggests `checkout`), branches, remotes, package.json scripts, Makefile targets and files.
