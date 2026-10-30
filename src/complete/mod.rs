@@ -111,17 +111,8 @@ pub fn complete(line: &str, ctx: &mut Context) -> Completion {
     let mut items = match parsed.words[skip..].split_first() {
         // Nothing is suggested on an empty line.
         None if token.raw.is_empty() => Vec::new(),
-        // A command with a spec, typed in full, already lists what can
-        // follow it, as if the space were typed.
-        None if specs::find(&token.value).is_some() => {
-            arguments(&token.value, &[], &Token::default(), ctx)
-                .into_iter()
-                .map(|item| Item {
-                    text: format!("{} {}", token.raw, item.text),
-                    ..item
-                })
-                .collect()
-        }
+        // While the command word is typed, only command names fit; what
+        // follows a command shows once the space is typed.
         None => command_names(&token, ctx),
         Some((name, rest)) => arguments(name, rest, &token, ctx),
     };
@@ -348,12 +339,11 @@ mod tests {
     }
 
     #[test]
-    fn a_full_command_lists_what_follows_it() {
-        let dir = sandbox("full");
+    fn a_command_word_gets_only_command_names() {
+        let dir = sandbox("word");
         let mut ctx = Context::new(Shell::Bash, dir.clone());
-        let expected = ["cd Documents/", "cd Downloads/", "cd My\\ Music/", "cd src/"];
-        assert_eq!(texts("cd", &mut ctx), expected);
-        assert!(texts("git", &mut ctx).contains(&"git commit".to_string()));
+        assert!(!texts("cd", &mut ctx).iter().any(|text| text.contains(' ')));
+        assert!(!texts("git", &mut ctx).iter().any(|text| text.contains(' ')));
         fs::remove_dir_all(dir).unwrap();
     }
 }

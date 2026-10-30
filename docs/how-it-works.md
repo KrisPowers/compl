@@ -41,8 +41,6 @@ Matching ignores case. Suggestions are sorted alphabetically, ignoring case, wit
 
 The list's first row is what you typed; the suggestions follow it. Tab moves the highlight down and types the highlighted suggestion into the shell in place of the word you were typing, as if you had typed it: only the part that differs is erased and retyped. Moving back to the first row puts back what you typed. While a suggestion from the list is on the line, the list stays as it is; typing anything else makes a new list for the new line. Enter is never intercepted, so it runs whatever is on the line.
 
-A command with a spec typed in full, such as `cd` or `git`, lists what can follow it straight away; picking one adds the space for you.
-
 ## Starting from your startup file
 
 `autocomplete setup` adds a line to your shell's startup file that runs `autocomplete init`. The snippet it prints starts `autocomplete run` for interactive terminals and exits the outer shell when the session ends. If autocomplete cannot start, or exits with an error, you are left in the outer shell as normal. Inside the session the variable `AUTOCOMPLETE_SESSION` is set, so the startup line does nothing there.
