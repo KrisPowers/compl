@@ -1,14 +1,13 @@
 #!/bin/sh
 # Installs compl on macOS and Linux from the latest GitHub release.
 #
-#   curl -fsSL https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.sh | sh
+#   curl -fsSL https://compl.krispowers.dev | sh
 #
 # COMPL_VERSION      a release tag such as v0.1.0 (default: latest)
 # COMPL_INSTALL_DIR  where the binary goes (default: ~/.local/bin)
 # COMPL_NO_SETUP     set to skip adding compl to your shell
 set -eu
 
-repo="KrisPowers/compl"
 version="${COMPL_VERSION:-latest}"
 dir="${COMPL_INSTALL_DIR:-$HOME/.local/bin}"
 
@@ -30,9 +29,9 @@ esac
 target="$arch-$os"
 
 if [ "$version" = latest ]; then
-    base="https://github.com/$repo/releases/latest/download"
+    base="https://compl.krispowers.dev/download/latest"
 else
-    base="https://github.com/$repo/releases/download/$version"
+    base="https://compl.krispowers.dev/download/$version"
 fi
 
 download() {

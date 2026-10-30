@@ -15,11 +15,11 @@ Both installers read these environment variables:
 For example:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.sh | COMPL_VERSION=v0.1.0 sh
+curl -fsSL https://compl.krispowers.dev | COMPL_VERSION=v0.1.0 sh
 ```
 
 ```powershell
-$env:COMPL_NO_SETUP = 1; irm https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.ps1 | iex
+$env:COMPL_NO_SETUP = 1; irm https://compl.krispowers.dev | iex
 ```
 
 Both installers check the download against the release's `checksums.txt` before installing it.

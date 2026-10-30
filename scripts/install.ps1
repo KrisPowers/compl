@@ -1,6 +1,6 @@
 # Installs compl on Windows from the latest GitHub release.
 #
-#   irm https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.ps1 | iex
+#   irm https://compl.krispowers.dev | iex
 #
 # COMPL_VERSION      a release tag such as v0.1.0 (default: latest)
 # COMPL_INSTALL_DIR  where the binary goes (default: %LOCALAPPDATA%\Programs\compl)
@@ -11,7 +11,6 @@
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
-    $repo = 'KrisPowers/compl'
     $version = if ($env:COMPL_VERSION) { $env:COMPL_VERSION } else { 'latest' }
     $dir = if ($env:COMPL_INSTALL_DIR) { $env:COMPL_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'Programs\compl' }
 
@@ -19,9 +18,9 @@
     if (-not [Environment]::Is64BitOperatingSystem) { throw 'compl needs 64-bit Windows' }
     $target = if ($arm) { 'aarch64-pc-windows-msvc' } else { 'x86_64-pc-windows-msvc' }
     $base = if ($version -eq 'latest') {
-        "https://github.com/$repo/releases/latest/download"
+        "https://compl.krispowers.dev/download/latest"
     } else {
-        "https://github.com/$repo/releases/download/$version"
+        "https://compl.krispowers.dev/download/$version"
     }
 
     $tmp = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid())
