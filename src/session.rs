@@ -7,7 +7,9 @@
 //! - Tab / Shift+Tab: move down or up the list. The highlighted suggestion
 //!   is put on the command line as you go; the first row puts back what you
 //!   typed.
-//! - Up / Down: move up or down the list, the same as Shift+Tab and Tab.
+//! - Down / Up: Down enters the list and moves down; Up moves up once in it.
+//!   Otherwise Up and Down go to the shell, and a line recalled from history
+//!   keeps its list hidden until you type.
 //! - Enter: runs the command line as it stands, as usual.
 //! - Esc: put back what you typed and hide the list until you type again.
 
@@ -340,8 +342,14 @@ impl Session {
                 self.step(key == Some(Key::Tab))?;
                 true
             }
-            Some(Key::Up | Key::Down) if self.menu.visible() => {
-                self.step(key == Some(Key::Down))?;
+            // Down enters the list; Up only moves within it, so Up on a
+            // line with suggestions still reaches the shell's history.
+            Some(Key::Down) if self.menu.visible() => {
+                self.step(true)?;
+                true
+            }
+            Some(Key::Up) if self.menu.visible() && self.menu.selected > 0 => {
+                self.step(false)?;
                 true
             }
             Some(Key::Escape) if self.menu.visible() => {
@@ -364,6 +372,11 @@ impl Session {
         }
         if !handled {
             self.forward(&bytes)?;
+            // A line recalled from history keeps its list hidden, so the
+            // next Up or Down keeps walking history.
+            if matches!(key, Some(Key::Up | Key::Down)) {
+                self.menu.suppressed = true;
+            }
         }
         self.redraw = true;
         Ok(())

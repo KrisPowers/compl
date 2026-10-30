@@ -57,11 +57,11 @@ Start typing. When suggestions exist, a list shows under the cursor:
 | --- | --- |
 | Tab | Move down the list and put that suggestion on the command line |
 | Shift+Tab | Move up the list; the first row puts back what you typed |
-| Up, Down | Move up or down the list, the same as Shift+Tab and Tab |
+| Down, Up | Down enters the list and moves down; Up moves up once you are in it |
 | Enter | Run the command line as it stands |
 | Esc | Put back what you typed and hide the list until you type again |
 
-When no list is showing, every key behaves exactly as it does without compl, so Tab still reaches your shell's own completion and Up and Down still go through history.
+When no list is showing, every key behaves exactly as it does without compl, so Tab still reaches your shell's own completion. Up and Down outside the list go through history as usual, and a line recalled from history keeps its list hidden until you type.
 
 To try compl without changing any startup file, run it directly:
 
