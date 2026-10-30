@@ -1,4 +1,4 @@
 # Loads your .zprofile for login shells. See .zshenv.
-ZDOTDIR=$AUTOCOMPLETE_ZDOTDIR
+ZDOTDIR=$COMPL_ZDOTDIR
 [[ -r $ZDOTDIR/.zprofile ]] && . $ZDOTDIR/.zprofile
-ZDOTDIR=$AUTOCOMPLETE_INTEGRATION
+ZDOTDIR=$COMPL_INTEGRATION

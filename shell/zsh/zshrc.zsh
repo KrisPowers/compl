@@ -1,10 +1,10 @@
-# Loads your .zshrc, then adds the prompt markers autocomplete reads. ZDOTDIR
+# Loads your .zshrc, then adds the prompt markers compl reads. ZDOTDIR
 # stays pointed at your directory from here on, so .zlogin and history work
 # as usual.
-ZDOTDIR=$AUTOCOMPLETE_ZDOTDIR
+ZDOTDIR=$COMPL_ZDOTDIR
 [[ -r $ZDOTDIR/.zshrc ]] && . $ZDOTDIR/.zshrc
 
-__autocomplete_precmd() {
+__compl_precmd() {
     printf '\033]6973;A;%s\007\033]6973;P;%s\007' "$PWD" "$PATH"
     # Prompt themes rebuild PROMPT, so the marker is re-added when missing.
     [[ $PROMPT == *'6973;B'* ]] || PROMPT="${PROMPT}%{"$'\033]6973;B\007'"%}"
@@ -14,4 +14,4 @@ __autocomplete_precmd() {
 typeset -g _ZSH_AUTOSUGGEST_DISABLED=1
 
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd __autocomplete_precmd
+add-zsh-hook precmd __compl_precmd

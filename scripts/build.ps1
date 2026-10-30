@@ -11,13 +11,13 @@ try {
     cargo build --release 2>&1 | ForEach-Object { "$_" }
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     $windows = $env:OS -eq 'Windows_NT'
-    $name = if ($windows) { 'autocomplete.exe' } else { 'autocomplete' }
+    $name = if ($windows) { 'compl.exe' } else { 'compl' }
     $built = Join-Path 'target/release' $name
     New-Item -ItemType Directory -Force -Path builds | Out-Null
     Copy-Item $built builds -Force -ErrorAction Stop
     Write-Host "Built builds/$name"
 
-    $dir = if ($windows) { Join-Path $env:LOCALAPPDATA 'Programs\autocomplete' } else { Join-Path $HOME '.local/bin' }
+    $dir = if ($windows) { Join-Path $env:LOCALAPPDATA 'Programs\compl' } else { Join-Path $HOME '.local/bin' }
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
     $installed = Join-Path $dir $name
     # Windows cannot overwrite a running program, but it can rename one, so

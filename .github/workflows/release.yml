@@ -58,14 +58,14 @@ jobs:
         run: |
           mkdir -p dist
           cp README.md LICENSE "target/${{ matrix.target }}/release/"
-          tar -czf "dist/${{ matrix.target }}.tar.gz" -C "target/${{ matrix.target }}/release" autocomplete README.md LICENSE
+          tar -czf "dist/${{ matrix.target }}.tar.gz" -C "target/${{ matrix.target }}/release" compl README.md LICENSE
       - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
           $release = "target/${{ matrix.target }}/release"
-          Compress-Archive -Path "$release/autocomplete.exe", README.md, LICENSE -DestinationPath "dist/${{ matrix.target }}.zip"
+          Compress-Archive -Path "$release/compl.exe", README.md, LICENSE -DestinationPath "dist/${{ matrix.target }}.zip"
       - name: Upload
         shell: bash
         env:
@@ -93,8 +93,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p Formula
-          bash scripts/formula.sh "${TAG#v}" dist/checksums.txt > Formula/autocomplete.rb
-          if git diff --quiet -- Formula/autocomplete.rb && git ls-files --error-unmatch Formula/autocomplete.rb >/dev/null 2>&1; then
+          bash scripts/formula.sh "${TAG#v}" dist/checksums.txt > Formula/compl.rb
+          if git diff --quiet -- Formula/compl.rb && git ls-files --error-unmatch Formula/compl.rb >/dev/null 2>&1; then
             echo "Formula already up to date"
             exit 0
           fi
@@ -102,7 +102,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
-          git add Formula/autocomplete.rb
+          git add Formula/compl.rb
           git commit -m "chore(brew): update formula to $TAG"
           git push origin "$branch"
           gh pr create --base main --head "$branch" \

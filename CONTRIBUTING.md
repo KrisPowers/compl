@@ -7,8 +7,8 @@ Thanks for helping. Bug reports, new and improved [specs](docs/specs.md), and fi
 You need a stable [Rust toolchain](https://rustup.rs).
 
 ```bash
-git clone https://github.com/KrisPowers/autocomplete
-cd autocomplete
+git clone https://github.com/KrisPowers/compl
+cd compl
 cargo test
 cargo run -- run
 ```

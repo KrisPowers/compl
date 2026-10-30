@@ -1,22 +1,22 @@
-# Installs autocomplete on Windows from the latest GitHub release.
+# Installs compl on Windows from the latest GitHub release.
 #
-#   irm https://raw.githubusercontent.com/KrisPowers/autocomplete/main/scripts/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.ps1 | iex
 #
-# AUTOCOMPLETE_VERSION      a release tag such as v0.1.0 (default: latest)
-# AUTOCOMPLETE_INSTALL_DIR  where the binary goes (default: %LOCALAPPDATA%\Programs\autocomplete)
-# AUTOCOMPLETE_NO_SETUP     set to skip adding autocomplete to your PowerShell profile
+# COMPL_VERSION      a release tag such as v0.1.0 (default: latest)
+# COMPL_INSTALL_DIR  where the binary goes (default: %LOCALAPPDATA%\Programs\compl)
+# COMPL_NO_SETUP     set to skip adding compl to your PowerShell profile
 
 & {
     $ErrorActionPreference = 'Stop'
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
-    $repo = 'KrisPowers/autocomplete'
-    $version = if ($env:AUTOCOMPLETE_VERSION) { $env:AUTOCOMPLETE_VERSION } else { 'latest' }
-    $dir = if ($env:AUTOCOMPLETE_INSTALL_DIR) { $env:AUTOCOMPLETE_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'Programs\autocomplete' }
+    $repo = 'KrisPowers/compl'
+    $version = if ($env:COMPL_VERSION) { $env:COMPL_VERSION } else { 'latest' }
+    $dir = if ($env:COMPL_INSTALL_DIR) { $env:COMPL_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'Programs\compl' }
 
     $arm = $env:PROCESSOR_ARCHITECTURE -eq 'ARM64' -or $env:PROCESSOR_ARCHITEW6432 -eq 'ARM64'
-    if (-not [Environment]::Is64BitOperatingSystem) { throw 'autocomplete needs 64-bit Windows' }
+    if (-not [Environment]::Is64BitOperatingSystem) { throw 'compl needs 64-bit Windows' }
     $target = if ($arm) { 'aarch64-pc-windows-msvc' } else { 'x86_64-pc-windows-msvc' }
     $base = if ($version -eq 'latest') {
         "https://github.com/$repo/releases/latest/download"
@@ -27,7 +27,7 @@
     $tmp = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid())
     New-Item -ItemType Directory -Path $tmp | Out-Null
     try {
-        Write-Host "Downloading autocomplete for $target"
+        Write-Host "Downloading compl for $target"
         $zip = Join-Path $tmp "$target.zip"
         $sums = Join-Path $tmp 'checksums.txt'
         Invoke-WebRequest "$base/$target.zip" -OutFile $zip -UseBasicParsing
@@ -40,11 +40,11 @@
 
         Expand-Archive $zip -DestinationPath (Join-Path $tmp 'out') -Force
         New-Item -ItemType Directory -Force -Path $dir | Out-Null
-        Copy-Item (Join-Path $tmp 'out\autocomplete.exe') $dir -Force
+        Copy-Item (Join-Path $tmp 'out\compl.exe') $dir -Force
     } finally {
         Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
     }
-    Write-Host "Installed $dir\autocomplete.exe"
+    Write-Host "Installed $dir\compl.exe"
 
     $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
     $entries = if ($userPath) { $userPath -split ';' } else { @() }
@@ -55,8 +55,8 @@
         Write-Host "Added $dir to your PATH"
     }
 
-    if (-not $env:AUTOCOMPLETE_NO_SETUP) {
+    if (-not $env:COMPL_NO_SETUP) {
         $shell = if ($PSVersionTable.PSEdition -eq 'Core') { 'pwsh' } else { 'powershell' }
-        & (Join-Path $dir 'autocomplete.exe') setup $shell
+        & (Join-Path $dir 'compl.exe') setup $shell
     }
 }

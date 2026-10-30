@@ -1,19 +1,19 @@
 #!/bin/sh
-# Installs autocomplete on macOS and Linux from the latest GitHub release.
+# Installs compl on macOS and Linux from the latest GitHub release.
 #
-#   curl -fsSL https://raw.githubusercontent.com/KrisPowers/autocomplete/main/scripts/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/KrisPowers/compl/main/scripts/install.sh | sh
 #
-# AUTOCOMPLETE_VERSION      a release tag such as v0.1.0 (default: latest)
-# AUTOCOMPLETE_INSTALL_DIR  where the binary goes (default: ~/.local/bin)
-# AUTOCOMPLETE_NO_SETUP     set to skip adding autocomplete to your shell
+# COMPL_VERSION      a release tag such as v0.1.0 (default: latest)
+# COMPL_INSTALL_DIR  where the binary goes (default: ~/.local/bin)
+# COMPL_NO_SETUP     set to skip adding compl to your shell
 set -eu
 
-repo="KrisPowers/autocomplete"
-version="${AUTOCOMPLETE_VERSION:-latest}"
-dir="${AUTOCOMPLETE_INSTALL_DIR:-$HOME/.local/bin}"
+repo="KrisPowers/compl"
+version="${COMPL_VERSION:-latest}"
+dir="${COMPL_INSTALL_DIR:-$HOME/.local/bin}"
 
 fail() {
-    echo "autocomplete: $*" >&2
+    echo "compl: $*" >&2
     exit 1
 }
 
@@ -48,7 +48,7 @@ download() {
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-echo "Downloading autocomplete for $target"
+echo "Downloading compl for $target"
 download "$base/$target.tar.gz" "$tmp/$target.tar.gz"
 download "$base/checksums.txt" "$tmp/checksums.txt"
 
@@ -64,15 +64,15 @@ fi
 
 tar -xzf "$tmp/$target.tar.gz" -C "$tmp"
 mkdir -p "$dir"
-cp "$tmp/autocomplete" "$dir/autocomplete"
-chmod 755 "$dir/autocomplete"
-echo "Installed $dir/autocomplete"
+cp "$tmp/compl" "$dir/compl"
+chmod 755 "$dir/compl"
+echo "Installed $dir/compl"
 
 case ":$PATH:" in
     *":$dir:"*) ;;
-    *) echo "Note: $dir is not on your PATH. Add it to run autocomplete by name." ;;
+    *) echo "Note: $dir is not on your PATH. Add it to run compl by name." ;;
 esac
 
-if [ -z "${AUTOCOMPLETE_NO_SETUP:-}" ]; then
-    "$dir/autocomplete" setup
+if [ -z "${COMPL_NO_SETUP:-}" ]; then
+    "$dir/compl" setup
 fi
