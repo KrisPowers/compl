@@ -4,7 +4,13 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      crates:
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
