@@ -1,23 +1,8 @@
-# compl
+<picture><source media="(prefers-color-scheme: light)" srcset="docs/images/header-light.png"><img src="docs/images/header.png" width="100%" alt="compl: inline, as-you-type suggestions for commands and paths. Works with any terminal on macOS, Linux and Windows; bash, zsh and fish with your own config; PowerShell 7, Windows PowerShell and cmd."></picture>
 
-Inline, as-you-type suggestions for commands and paths, in every terminal and shell.
+<a href="docs/how-it-works.md"><picture><source media="(prefers-color-scheme: light)" srcset="docs/images/how-it-works-light.png"><img src="docs/images/how-it-works.png" width="100%" alt="How it works: type cd Do and a list of Documents, Downloads and Dotfiles shows under the cursor, moved through with Tab, Shift+Tab, Enter and Esc. Your keys go through compl, a pseudo terminal, to your shell unchanged. The shell's output and its prompt markers, added by an integration script that loads after your own config, come back through compl, which keeps a copy in a vt100 screen model, reads the typed line from it and draws the list over your terminal."></picture></a>
 
-Type `cd` and a space, and a list of directories appears under your cursor; type `Do` and it narrows to the ones starting with it. Its first row is what you typed. Press Tab to move down the list; each directory you land on goes onto the command line. Keep typing to narrow the list, and press Enter to run the line as it stands.
-
-```text
-~/code $ cd Documents/
-            Do
-            Documents
-            Downloads
-            Dotfiles
-```
-
-It works the same way for command names, subcommands and options (`git che` suggests `checkout`), branches, remotes, package.json scripts, Makefile targets and files.
-
-- Works in any terminal: macOS Terminal, iTerm2, Windows Terminal, the Windows console, GNOME Terminal, Konsole, Alacritty, kitty, WezTerm, VS Code and others.
-- Works with bash, zsh, fish, PowerShell 7, Windows PowerShell and cmd.
-- Suggestions are sorted alphabetically, with digits and symbols ahead of letters.
-- Your shell config, prompt theme and key bindings stay as they are.
+<a href="docs/specs.md"><picture><source media="(prefers-color-scheme: light)" srcset="docs/images/suggestions-light.png"><img src="docs/images/suggestions.png" width="100%" alt="Where suggestions come from: the line git checkout fe is split by your shell's quoting. Commands come from the programs on PATH and built-ins; specs give subcommands, options and arguments; git gives branches and remotes; paths only where a spec takes one; and projects give package.json scripts and Makefile targets. For checkout the spec takes a branch, so fe matches feature/login, feature/search and origin/feature/login, sorted with case ignored and quoted for your shell."></picture></a>
 
 ## Installation
 

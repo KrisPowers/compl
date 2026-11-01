@@ -54,12 +54,11 @@ pub use console::size;
 mod console {
     use anyhow::{bail, Result};
     use windows_sys::Win32::System::Console::{
-        GetConsoleCP, GetConsoleMode, GetConsoleOutputCP, GetConsoleScreenBufferInfo,
-        GetStdHandle, SetConsoleCP, SetConsoleMode, SetConsoleOutputCP,
-        CONSOLE_SCREEN_BUFFER_INFO, DISABLE_NEWLINE_AUTO_RETURN, ENABLE_ECHO_INPUT,
-        ENABLE_LINE_INPUT, ENABLE_PROCESSED_INPUT, ENABLE_PROCESSED_OUTPUT,
-        ENABLE_VIRTUAL_TERMINAL_INPUT, ENABLE_VIRTUAL_TERMINAL_PROCESSING, STD_INPUT_HANDLE,
-        STD_OUTPUT_HANDLE,
+        GetConsoleCP, GetConsoleMode, GetConsoleOutputCP, GetConsoleScreenBufferInfo, GetStdHandle,
+        SetConsoleCP, SetConsoleMode, SetConsoleOutputCP, CONSOLE_SCREEN_BUFFER_INFO,
+        DISABLE_NEWLINE_AUTO_RETURN, ENABLE_ECHO_INPUT, ENABLE_LINE_INPUT, ENABLE_PROCESSED_INPUT,
+        ENABLE_PROCESSED_OUTPUT, ENABLE_VIRTUAL_TERMINAL_INPUT, ENABLE_VIRTUAL_TERMINAL_PROCESSING,
+        STD_INPUT_HANDLE, STD_OUTPUT_HANDLE,
     };
 
     const UTF8: u32 = 65001;
@@ -88,7 +87,8 @@ mod console {
                 input_cp: GetConsoleCP(),
                 output_cp: GetConsoleOutputCP(),
             };
-            let raw = input_mode & !(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+            let raw =
+                input_mode & !(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
             SetConsoleMode(input, raw | ENABLE_VIRTUAL_TERMINAL_INPUT);
             SetConsoleMode(
                 output,

@@ -23,7 +23,7 @@ If a session ever misbehaves, exiting the shell returns you to the outer one.
 
 ## The session log
 
-Every session writes what it saw (prompt markers, the command line it read, how many suggestions it found and which keys it handled) to `session.log` in compl's cache directory: `%LOCALAPPDATA%\compl` on Windows, `~/.cache/compl` elsewhere. Each new session replaces the last one's log.
+Every session writes what it saw (prompt markers, the first word of each command line and its length, how many suggestions it found and which keys it handled; the rest of a line is never written) to `session.log` in compl's cache directory: `%LOCALAPPDATA%\compl` on Windows, `~/.cache/compl` elsewhere. Each new session replaces the last one's log.
 
 ## Reporting a bug
 

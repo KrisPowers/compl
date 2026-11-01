@@ -137,7 +137,10 @@ pub fn run(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<()> {
     let writer = pty.master.take_writer()?;
 
     let mut log = Log::open();
-    log.line(format_args!("started {} in a {cols}x{rows} terminal", shell.name()));
+    log.line(format_args!(
+        "started {} in a {cols}x{rows} terminal",
+        shell.name()
+    ));
 
     let (tx, rx) = mpsc::channel();
     read_stdin(tx.clone());
@@ -387,7 +390,8 @@ impl Session {
         self.capture_at = None;
         let screen = self.parser.screen();
         let (row, col) = screen.cursor_position();
-        self.log.line(format_args!("input starts at row {row}, column {col}"));
+        self.log
+            .line(format_args!("input starts at row {row}, column {col}"));
         self.prompt = Some(Prompt::capture(screen));
         self.redraw = true;
     }
@@ -409,7 +413,11 @@ impl Session {
         let from = self.menu.shown().to_string();
         self.menu.selected = row;
         let to = self.menu.shown();
-        let common = from.chars().zip(to.chars()).take_while(|(a, b)| a == b).count();
+        let common = from
+            .chars()
+            .zip(to.chars())
+            .take_while(|(a, b)| a == b)
+            .count();
         let erase = "\x7f".repeat(from.chars().count() - common);
         let keys = erase + &to.chars().skip(common).collect::<String>();
         self.pty.write_all(keys.as_bytes())?;
@@ -458,7 +466,8 @@ impl Session {
         let screen = self.parser.screen();
         let Some(line) = self.prompt.as_mut().and_then(|prompt| prompt.read(screen)) else {
             if self.menu.line.is_some() && !self.menu.pending {
-                self.log.line(format_args!("cursor is not at the end of the input"));
+                self.log
+                    .line(format_args!("cursor is not at the end of the input"));
                 self.menu.line = None;
             }
             return;
@@ -476,7 +485,13 @@ impl Session {
             self.menu.completion = complete::complete(&line, &mut self.ctx);
             self.menu.selected = 0;
             let count = self.menu.completion.items.len();
-            self.log.line(format_args!("line {line:?}: {count} suggestions"));
+            // Only the command word goes in the log: the rest of a line can
+            // hold a password or token, and the log is meant to be shared.
+            let word = line.split_whitespace().next().unwrap_or("");
+            let rest = line.chars().count() - word.chars().count();
+            self.log.line(format_args!(
+                "line {word:?} and {rest} more characters: {count} suggestions"
+            ));
             self.menu.line = Some(line);
         }
     }
@@ -575,7 +590,10 @@ mod tests {
 
     #[test]
     fn takes_the_cursor_report_out_of_input() {
-        assert_eq!(take_cursor_report(b"a\x1b[12;40Rb"), Some((12, 40, b"ab".to_vec())));
+        assert_eq!(
+            take_cursor_report(b"a\x1b[12;40Rb"),
+            Some((12, 40, b"ab".to_vec()))
+        );
         assert_eq!(take_cursor_report(b"\x1b[A"), None);
     }
 }

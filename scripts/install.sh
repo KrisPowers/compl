@@ -3,7 +3,7 @@
 #
 #   curl -fsSL https://compl.krispowers.dev | sh
 #
-# COMPL_VERSION      a release tag such as v0.1.0 (default: latest)
+# COMPL_VERSION      a release tag such as v1.0.0 (default: latest)
 # COMPL_INSTALL_DIR  where the binary goes (default: ~/.local/bin)
 # COMPL_NO_SETUP     set to skip adding compl to your shell
 set -eu

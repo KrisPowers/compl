@@ -104,9 +104,15 @@ mod tests {
     #[test]
     fn finds_specs_by_any_spelling() {
         assert_eq!(find("git").map(|spec| spec.name.as_str()), Some("git"));
-        assert_eq!(find("/usr/bin/git").map(|spec| spec.name.as_str()), Some("git"));
+        assert_eq!(
+            find("/usr/bin/git").map(|spec| spec.name.as_str()),
+            Some("git")
+        );
         assert_eq!(find("Git.exe").map(|spec| spec.name.as_str()), Some("git"));
-        assert_eq!(find("sl").map(|spec| spec.name.as_str()), Some("Set-Location"));
+        assert_eq!(
+            find("sl").map(|spec| spec.name.as_str()),
+            Some("Set-Location")
+        );
         assert!(find("no-such-command").is_none());
     }
 }

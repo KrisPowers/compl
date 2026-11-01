@@ -184,7 +184,12 @@ fn arguments(name: &str, rest: &[String], token: &Token, ctx: &mut Context) -> V
     if positional == 0 {
         for sub in &node.subcommands {
             if starts_with(&sub.name, &token.value) {
-                items.push(Item::word(&sub.name, sub.description.clone(), token, quoting));
+                items.push(Item::word(
+                    &sub.name,
+                    sub.description.clone(),
+                    token,
+                    quoting,
+                ));
             }
         }
     }
@@ -239,7 +244,11 @@ mod tests {
     use super::*;
 
     fn texts(line: &str, ctx: &mut Context) -> Vec<String> {
-        complete(line, ctx).items.into_iter().map(|item| item.text).collect()
+        complete(line, ctx)
+            .items
+            .into_iter()
+            .map(|item| item.text)
+            .collect()
     }
 
     fn sandbox(name: &str) -> PathBuf {
@@ -251,8 +260,16 @@ mod tests {
         for file in ["notes.txt", "src/main.rs"] {
             fs::write(dir.join(file), "").unwrap();
         }
-        fs::write(dir.join("Makefile"), "build:\n\tcc\ntest lint: build\nVAR := 1\n").unwrap();
-        fs::write(dir.join("package.json"), r#"{"scripts":{"dev":"x","deploy":"y"}}"#).unwrap();
+        fs::write(
+            dir.join("Makefile"),
+            "build:\n\tcc\ntest lint: build\nVAR := 1\n",
+        )
+        .unwrap();
+        fs::write(
+            dir.join("package.json"),
+            r#"{"scripts":{"dev":"x","deploy":"y"}}"#,
+        )
+        .unwrap();
         dir
     }
 

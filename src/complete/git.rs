@@ -71,9 +71,10 @@ fn walk(dir: &Path, prefix: &str, out: &mut Vec<String>) {
     };
     for entry in entries.flatten() {
         let name = format!("{prefix}{}", entry.file_name().to_string_lossy());
-        let path = entry.path();
-        if path.is_dir() {
-            walk(&path, &format!("{name}/"), out);
+        // A link isn't followed: one pointing back up the tree would never
+        // end, and a branch is never a link.
+        if entry.file_type().is_ok_and(|t| t.is_dir()) {
+            walk(&entry.path(), &format!("{name}/"), out);
         } else {
             out.push(name);
         }
@@ -95,10 +96,17 @@ mod tests {
         fs::write(git.join("refs/remotes/origin/HEAD"), "").unwrap();
         let packed = "abc refs/heads/old\nabc refs/remotes/origin/main\n";
         fs::write(git.join("packed-refs"), packed).unwrap();
-        fs::write(git.join("config"), "[core]\n[remote \"origin\"]\n\turl = x\n").unwrap();
+        fs::write(
+            git.join("config"),
+            "[core]\n[remote \"origin\"]\n\turl = x\n",
+        )
+        .unwrap();
         let nested = repo.join("src");
         fs::create_dir_all(&nested).unwrap();
-        assert_eq!(branches(&nested), ["feature/login", "main", "old", "origin/main"]);
+        assert_eq!(
+            branches(&nested),
+            ["feature/login", "main", "old", "origin/main"]
+        );
         assert_eq!(remotes(&nested), ["origin"]);
         fs::remove_dir_all(repo).unwrap();
     }
