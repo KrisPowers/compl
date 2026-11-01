@@ -36,7 +36,10 @@ pub fn targets(cwd: &Path) -> Vec<String> {
             (!rest.starts_with('=')).then_some(names)
         })
         .flat_map(str::split_whitespace)
-        .filter(|name| name.chars().all(|c| c.is_alphanumeric() || "-_./".contains(c)))
+        .filter(|name| {
+            name.chars()
+                .all(|c| c.is_alphanumeric() || "-_./".contains(c))
+        })
         .map(String::from)
         .collect();
     names.sort();

@@ -128,7 +128,11 @@ pub fn command(shell: Shell, exe: Option<PathBuf>, login: bool) -> Result<Comman
             }
         }
         Shell::Zsh => {
-            let files = [(".zshenv", ZSHENV), (".zprofile", ZPROFILE), (".zshrc", ZSHRC)];
+            let files = [
+                (".zshenv", ZSHENV),
+                (".zprofile", ZPROFILE),
+                (".zshrc", ZSHRC),
+            ];
             let dir = integration(shell, &files)?;
             if let Some(user) = env::var_os("ZDOTDIR") {
                 cmd.env("COMPL_ZDOTDIR", user);
@@ -280,9 +284,15 @@ pub fn setup(shell: Shell, remove: bool) -> Result<()> {
     if !out.is_empty() {
         out.push('\n');
     }
-    out.push_str(&format!("{SETUP_START}\n{}\n{SETUP_END}\n", init_line(shell)?));
+    out.push_str(&format!(
+        "{SETUP_START}\n{}\n{SETUP_END}\n",
+        init_line(shell)?
+    ));
     fs::write(&file, out).with_context(|| format!("writing {}", file.display()))?;
-    println!("Added compl to {}. Open a new terminal to start using it.", file.display());
+    println!(
+        "Added compl to {}. Open a new terminal to start using it.",
+        file.display()
+    );
     Ok(())
 }
 
@@ -304,16 +314,14 @@ fn init_line(shell: Shell) -> Result<String> {
     };
     let name = shell.name();
     Ok(match (shell, exe) {
-        (Shell::Bash | Shell::Zsh, None) => format!(
-            "command -v compl >/dev/null 2>&1 && eval \"$(compl init {name})\""
-        ),
+        (Shell::Bash | Shell::Zsh, None) => {
+            format!("command -v compl >/dev/null 2>&1 && eval \"$(compl init {name})\"")
+        }
         (Shell::Bash | Shell::Zsh, Some(exe)) => {
             let exe = posix_quote(&exe);
             format!("[ -x {exe} ] && eval \"$({exe} init {name})\"")
         }
-        (Shell::Fish, None) => {
-            "if type -q compl\n    compl init fish | source\nend".to_string()
-        }
+        (Shell::Fish, None) => "if type -q compl\n    compl init fish | source\nend".to_string(),
         (Shell::Fish, Some(exe)) => {
             let exe = fish_quote(&exe);
             format!("if test -x {exe}\n    {exe} init fish | source\nend")

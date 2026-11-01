@@ -153,7 +153,10 @@ mod tests {
 
     #[test]
     fn splits_words() {
-        assert_eq!(words("git commit -m", Quoting::Posix), ["git", "commit", "-m"]);
+        assert_eq!(
+            words("git commit -m", Quoting::Posix),
+            ["git", "commit", "-m"]
+        );
         assert_eq!(words("cd ", Quoting::Posix), ["cd", ""]);
         assert_eq!(words("ls | gr", Quoting::Posix), ["gr"]);
     }
@@ -170,9 +173,18 @@ mod tests {
 
     #[test]
     fn quotes_values() {
-        assert_eq!(quote("My Music/", None, Quoting::Posix, true), r"My\ Music/");
-        assert_eq!(quote("My Music/", Some('\''), Quoting::Posix, true), "'My Music/");
-        assert_eq!(quote("it's", Some('\''), Quoting::Posix, false), r"'it'\''s'");
+        assert_eq!(
+            quote("My Music/", None, Quoting::Posix, true),
+            r"My\ Music/"
+        );
+        assert_eq!(
+            quote("My Music/", Some('\''), Quoting::Posix, true),
+            "'My Music/"
+        );
+        assert_eq!(
+            quote("it's", Some('\''), Quoting::Posix, false),
+            r"'it'\''s'"
+        );
         assert_eq!(quote("My Music", None, Quoting::Pwsh, false), "'My Music'");
         assert_eq!(quote("plain", None, Quoting::Pwsh, false), "plain");
         assert_eq!(quote("a b", None, Quoting::Cmd, false), "\"a b\"");
