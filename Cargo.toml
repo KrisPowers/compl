@@ -1,6 +1,6 @@
 [package]
 name = "compl"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 description = "Inline, as-you-type suggestions for commands and paths in every terminal and shell."
 license = "MIT"

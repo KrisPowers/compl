@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prints the Homebrew formula for a release.
-#   bash scripts/formula.sh 0.1.0 dist/checksums.txt > Formula/compl.rb
+#   bash scripts/formula.sh 1.0.0 dist/checksums.txt > Formula/compl.rb
 set -euo pipefail
 
 version="$1"

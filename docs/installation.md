@@ -8,14 +8,14 @@ Both installers read these environment variables:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `COMPL_VERSION` | `latest` | Install a specific release tag, such as `v0.1.0` |
+| `COMPL_VERSION` | `latest` | Install a specific release tag, such as `v1.0.0` |
 | `COMPL_INSTALL_DIR` | `~/.local/bin`, or `%LOCALAPPDATA%\Programs\compl` on Windows | Where the binary goes |
 | `COMPL_NO_SETUP` | unset | Set it to skip `compl setup` |
 
 For example:
 
 ```bash
-curl -fsSL https://compl.krispowers.dev | COMPL_VERSION=v0.1.0 sh
+curl -fsSL https://compl.krispowers.dev | COMPL_VERSION=v1.0.0 sh
 ```
 
 ```powershell
